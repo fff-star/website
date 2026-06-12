@@ -1,0 +1,58 @@
+---
+import BaseLayout from '../components/layout/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import { SITE } from '../lib/constants';
+
+const blogPosts = await getCollection('blog', ({ data }) => !data.draft);
+const sortedBlog = blogPosts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+---
+
+<BaseLayout>
+  <!-- Asymmetrical hero -->
+  <article class="first-entry">
+    <header class="entry-header">
+      <h1>{SITE.title}</h1>
+    </header>
+    <div class="entry-content">
+      <p set:html={SITE.description.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')} />
+    </div>
+    <footer class="entry-footer">
+      <div class="social-icons">
+        <a href="/rss.xml" target="_blank" rel="noopener noreferrer" aria-label="RSS Feed">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="height: 24px; width: 24px;">
+            <path d="M4 11a9 9 0 0 1 9 9"></path>
+            <path d="M4 4a16 16 0 0 1 16 16"></path>
+            <circle cx="5" cy="19" r="1"></circle>
+          </svg>
+        </a>
+      </div>
+    </footer>
+  </article>
+
+  <!-- Blog Posts -->
+  {
+    sortedBlog.length > 0 ? (
+      <section>
+        {sortedBlog.map((post) => (
+          <div style="margin-bottom: 12px;">
+            <span style="color: var(--secondary); font-size: 18px;">
+              {post.data.date.toLocaleDateString('en-US', {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric',
+              })}
+            </span>
+            <br>
+            <a href={`/blog/${post.id.replace(/\.md$/, '')}/`} style="color: var(--primary); font-size: 22px; line-height: 1.4;">
+              {post.data.title}
+            </a>
+          </div>
+        ))}
+      </section>
+    ) : (
+      <p style="color: var(--secondary); text-align: center; padding: 2rem 0;">
+        No posts yet.
+      </p>
+    )
+  }
+</BaseLayout>

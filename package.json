@@ -1,0 +1,30 @@
+{
+  "name": "website",
+  "type": "module",
+  "version": "0.0.1",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/react": "^5.0.7",
+    "@astrojs/rss": "^4.0.18",
+    "@braindb/remark-wiki-link": "^2.1.0",
+    "@tailwindcss/vite": "^4.3.0",
+    "astro": "^6.4.6",
+    "katex": "^0.17.0",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "react-force-graph-2d": "^1.29.1",
+    "rehype-callouts": "^2.1.2",
+    "rehype-katex": "^7.0.1",
+    "rehype-slug": "^6.0.0",
+    "remark-math": "^6.0.0",
+    "tailwindcss": "^4.3.0"
+  }
+}

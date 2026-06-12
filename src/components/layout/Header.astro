@@ -1,0 +1,55 @@
+---
+import { NAV_ITEMS, SITE } from '../../lib/constants';
+import ThemeToggle from '../ui/ThemeToggle.astro';
+
+const currentPath = Astro.url.pathname;
+---
+
+<header class="header" style="border-bottom: 1px solid var(--border);">
+  <nav
+    class="header-nav"
+    style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; max-width: calc(var(--nav-width) + var(--gap) * 2); margin: auto; height: var(--header-height); padding: 0 var(--gap); column-gap: var(--gap);"
+  >
+    <!-- Logo — Fraunces serif -->
+    <div class="logo" style="display: flex; align-items: center; column-gap: 0.75rem; flex-wrap: wrap;">
+      <a
+        href="/"
+        style="font-family: 'Fraunces', Georgia, serif; font-size: 24px; font-weight: 400; font-style: italic; letter-spacing: -0.01em; color: var(--primary); display: flex; align-items: center; column-gap: 0.55rem;"
+      >
+        {SITE.title}
+      </a>
+      <div
+        class="logo-switches"
+        style="display: inline-flex; gap: 0.4rem; align-items: center;"
+      >
+        <ThemeToggle />
+      </div>
+    </div>
+
+    <!-- Navigation Menu -->
+    <ul
+      id="menu"
+      class="menu"
+      style="list-style: none; display: flex; align-items: center; column-gap: var(--gap); font-size: 18px;"
+    >
+      {
+        NAV_ITEMS.map(({ label, href }) => {
+          const active = currentPath.startsWith(href);
+          return (
+            <li>
+              <a
+                href={href}
+                style={active
+                  ? `font-weight: 700; color: var(--accent);`
+                  : `color: var(--secondary);`
+                }
+              >
+                {label}
+              </a>
+            </li>
+          );
+        })
+      }
+    </ul>
+  </nav>
+</header>

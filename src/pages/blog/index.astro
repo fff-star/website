@@ -1,0 +1,55 @@
+---
+import BaseLayout from '../../components/layout/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const posts = await getCollection('blog', ({ data }) => !data.draft);
+const sorted = posts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+// Group by year, then by month
+const grouped = new Map<string, Map<string, typeof sorted>>();
+for (const post of sorted) {
+  const year = post.data.date.getFullYear().toString();
+  const month = post.data.date.toLocaleDateString('en-US', { month: 'long' });
+  if (!grouped.has(year)) grouped.set(year, new Map());
+  const months = grouped.get(year)!;
+  if (!months.has(month)) months.set(month, []);
+  months.get(month)!.push(post);
+}
+---
+
+<BaseLayout title="Blog">
+  <header class="page-header">
+    <h1>Blog</h1>
+  </header>
+  {sorted.length === 0 && <p>No posts yet.</p>}
+
+  <div class="archive-posts">
+    {[...grouped.entries()].map(([year, months]) => (
+      <div class="archive-year">
+        <h2>{year}</h2>
+        {[...months.entries()].map(([month, items]) => (
+          <div class="archive-month">
+            <h3 class="archive-month-header">{month}</h3>
+            <div>
+              {items.map((post) => (
+                <div class="archive-entry">
+                  <h3 class="archive-entry-title">
+                    <a href={`/blog/${post.id.replace(/\.md$/, '')}/`}>
+                      {post.data.title}
+                    </a>
+                  </h3>
+                  <div class="archive-meta">
+                    {post.data.date.toLocaleDateString('en-US', {
+                      month: 'short',
+                      day: 'numeric',
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    ))}
+  </div>
+</BaseLayout>

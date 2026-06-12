@@ -1,0 +1,71 @@
+---
+import BaseLayout from '../../components/layout/BaseLayout.astro';
+import PostEntry from '../../components/blog/PostEntry.astro';
+import NoteCard from '../../components/note/NoteCard.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const notes = await getCollection('notes');
+  const posts = await getCollection('blog');
+  const tagSet = new Set<string>();
+  for (const item of [...notes, ...posts]) {
+    for (const tag of item.data.tags) {
+      const t = String(tag);
+      if (t && !t.includes('/')) tagSet.add(t);
+    }
+  }
+  return [...tagSet].map((tag) => ({ params: { tag } }));
+}
+
+const { tag } = Astro.params;
+
+const notes = await getCollection('notes', ({ data }) =>
+  data.publish && !data.draft && data.tags.map(String).includes(tag),
+);
+const posts = await getCollection('blog', ({ data }) =>
+  !data.draft && data.tags.map(String).includes(tag),
+);
+
+const sortedNotes = notes.sort(
+  (a, b) => (b.data.date?.getTime() ?? 0) - (a.data.date?.getTime() ?? 0),
+);
+const sortedPosts = posts.sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+);
+---
+
+<BaseLayout title={`#${tag}`}>
+  <header class="page-header">
+    <h1>#{tag}</h1>
+  </header>
+  <p style="color: var(--secondary); margin-bottom: var(--gap);">
+    {notes.length + posts.length} item{(notes.length + posts.length) === 1 ? '' : 's'} tagged with #{tag}
+  </p>
+
+  {
+    sortedPosts.length > 0 && (
+      <section style="margin-bottom: var(--content-gap);">
+        {sortedPosts.map((post) => <PostEntry post={post} />)}
+      </section>
+    )
+  }
+
+  {
+    sortedNotes.length > 0 && (
+      <section>
+        {sortedNotes.map((note) => <NoteCard note={note} />)}
+      </section>
+    )
+  }
+
+  {notes.length + posts.length === 0 && <p>No content with this tag.</p>}
+
+  <div style="text-align: center; margin-top: var(--gap);">
+    <a
+      href="/tags/"
+      style="font-size: 14px; color: var(--secondary); text-decoration: underline; text-underline-offset: 0.2rem;"
+    >
+      ← All tags
+    </a>
+  </div>
+</BaseLayout>

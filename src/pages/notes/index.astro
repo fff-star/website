@@ -1,0 +1,68 @@
+---
+import BaseLayout from '../../components/layout/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const notes = await getCollection('notes', ({ data }) => data.publish && !data.draft);
+
+// Find folders: notes whose ids contain a slash
+const folderSet = new Set<string>();
+const rootNotes: typeof notes = [];
+
+for (const note of notes) {
+  const id = note.id.replace(/\.md$/, '');
+  if (!id.includes('/')) {
+    rootNotes.push(note);
+  } else {
+    folderSet.add(id.slice(0, id.indexOf('/')));
+  }
+}
+
+const folders = [...folderSet].sort();
+---
+
+<BaseLayout title="Notes">
+  <header class="page-header">
+    <h1>Notes</h1>
+  </header>
+
+  {notes.length === 0 && <p>No notes published yet.</p>}
+
+  <!-- Folders -->
+  {folders.map((folder) => {
+    const count = notes.filter((n) => {
+      const id = n.id.replace(/\.md$/, '');
+      return id.startsWith(folder + '/');
+    }).length;
+    return (
+      <div class="archive-entry" style="margin-bottom: 6px;">
+        <a href={`/notes/${folder}/`} style="color: var(--primary); font-size: 18px;">
+          {folder}/
+        </a>
+        <span class="archive-meta" style="margin-left: 10px;">
+          {count} notes
+        </span>
+        <a
+          href={`/notes/graph/?folder=${folder}`}
+          style="font-size: 14px; color: var(--accent); margin-left: 12px;"
+        >
+          Graph →
+        </a>
+      </div>
+    );
+  })}
+
+  <!-- Root notes -->
+  {rootNotes.sort((a, b) => (b.data.date?.getTime() ?? 0) - (a.data.date?.getTime() ?? 0)).map((note) => {
+    const slug = note.id.replace(/\.md$/, '');
+    return (
+      <div class="archive-entry" style="margin-bottom: 4px;">
+        <span class="archive-meta" style="margin-right: 12px;">
+          {note.data.date?.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+        </span>
+        <a href={`/notes/${slug}/`} style="color: var(--primary);">
+          {note.data.title}
+        </a>
+      </div>
+    );
+  })}
+</BaseLayout>

@@ -1,0 +1,37 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import PostMeta from './PostMeta.astro';
+
+const { post } = Astro.props;
+const url = `/blog/${post.id.replace(/\.md$/, '')}/`;
+---
+
+<article class="post-entry">
+  <!-- Optional cover image -->
+  {
+    post.data.cover && (
+      <div class="entry-cover" style="font-size: 14px; margin-bottom: var(--gap); text-align: center;">
+        <img
+          src={post.data.cover}
+          alt={post.data.title}
+          style="border-radius: var(--radius); width: 100%; height: auto;"
+          loading="lazy"
+        />
+      </div>
+    )
+  }
+  <header class="entry-header">
+    <h2 style="font-size: 24px; line-height: 1.3;">{post.data.title}</h2>
+  </header>
+  <div class="entry-content">
+    <p>{post.data.description}</p>
+  </div>
+  <footer class="entry-footer">
+    <PostMeta date={post.data.date} />
+  </footer>
+  <a
+    href={url}
+    class="entry-link"
+    aria-label={post.data.title}
+  ></a>
+</article>

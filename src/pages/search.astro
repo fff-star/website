@@ -1,0 +1,39 @@
+---
+import BaseLayout from '../components/layout/BaseLayout.astro';
+---
+
+<BaseLayout title="Search">
+  <header class="page-header">
+    <h1>Search</h1>
+  </header>
+
+  <div style="margin-bottom: var(--content-gap);">
+    <p style="color: var(--secondary); margin-bottom: 10px;">
+      Search across all notes and blog posts. Install Pagefind for full-text search.
+    </p>
+    <div style="margin-top: var(--content-gap);">
+      <input
+        type="text"
+        id="search-input"
+        placeholder="Search…"
+        style="padding: 4px 10px; width: 100%; color: var(--primary); font-weight: bold; border: 2px solid var(--tertiary); border-radius: var(--radius); background: var(--theme);"
+      />
+    </div>
+    <div id="search-results" style="margin: var(--content-gap) 0;">
+      <!-- Search results will appear here when Pagefind is enabled -->
+    </div>
+  </div>
+
+  <noscript>
+    <p style="color: var(--secondary);">
+      Enable JavaScript for search functionality.
+    </p>
+  </noscript>
+</BaseLayout>
+
+<style>
+  #search-input:focus {
+    outline: none;
+    border-color: var(--secondary);
+  }
+</style>

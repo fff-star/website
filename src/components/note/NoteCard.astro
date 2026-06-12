@@ -1,0 +1,36 @@
+---
+const { note } = Astro.props;
+const url = `/notes/${note.id.replace(/\.md$/, '')}/`;
+---
+
+<article class="post-entry">
+  <header class="entry-header">
+    <h2 style="font-size: 24px; line-height: 1.3;">{note.data.title}</h2>
+  </header>
+  <div class="entry-content">
+    <p>{note.data.description ?? 'No description'}</p>
+  </div>
+  <footer class="entry-footer">
+    {
+      note.data.tags.length > 0 && (
+        <span style="font-size: 12px;">
+          {note.data.tags.map((tag) => `#${tag}`).join(' ')}
+        </span>
+      )
+    }
+    {note.data.date && (
+      <span style="margin-left: 8px;">
+        {note.data.date.toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric',
+        })}
+      </span>
+    )}
+  </footer>
+  <a
+    href={url}
+    class="entry-link"
+    aria-label={note.data.title}
+  ></a>
+</article>

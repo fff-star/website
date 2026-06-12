@@ -1,0 +1,50 @@
+---
+import BaseLayout from '../../components/layout/BaseLayout.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const notes = await getCollection('notes');
+  // Detect folders: notes whose ids contain a slash
+  const folderSet = new Set<string>();
+  for (const note of notes) {
+    const id = note.id.replace(/\.md$/, '');
+    const idx = id.indexOf('/');
+    if (idx !== -1) folderSet.add(id.slice(0, idx));
+  }
+  return [...folderSet].map((folder) => ({ params: { folder } }));
+}
+
+const { folder } = Astro.params;
+
+// Find the folder's index.md
+// Glob loader converts "folder/index.md" → id = "folder"
+const allNotes = await getCollection('notes', ({ data }) => data.publish && !data.draft);
+const indexNote = allNotes.find((n) => n.id.replace(/\.md$/, '') === folder);
+const indexContent = indexNote ? await render(indexNote) : null;
+---
+
+<BaseLayout title={`${folder}/`}>
+  <nav class="breadcrumbs">
+    <a href="/notes/">Notes</a>
+    <span>/</span>
+    <span>{folder}/</span>
+  </nav>
+
+  <header class="page-header">
+    <h1>{folder}/</h1>
+  </header>
+
+  <!-- Folder index content -->
+  {
+    indexContent ? (
+      <div class="post-content md-content">
+        <indexContent.Content />
+      </div>
+    ) : (
+      <p style="color: var(--secondary); margin-bottom: var(--gap);">
+        No index.md in this folder.
+      </p>
+    )
+  }
+
+</BaseLayout>

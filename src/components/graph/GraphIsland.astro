@@ -1,0 +1,41 @@
+---
+import { buildGraph, buildFolderGraph, buildLocalGraph, type GraphData } from '../../lib/graph';
+
+interface Props {
+  localSlug?: string;
+  folder?: string;
+}
+
+const { localSlug, folder } = Astro.props;
+
+let graphData: GraphData;
+if (localSlug) {
+  graphData = await buildLocalGraph(localSlug);
+} else if (folder) {
+  graphData = await buildFolderGraph(folder);
+} else {
+  graphData = await buildGraph();
+}
+---
+
+<div
+  id="graph-mount"
+  class="graph-container"
+  data-graph={JSON.stringify(graphData)}
+  style="width: 100%; min-height: 400px; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; background: var(--entry);"
+>
+  {
+    graphData.nodes.length === 0 && (
+      <div style="padding: 2rem; text-align: center; color: var(--secondary);">
+        No connections in this folder yet. Add [[wiki-links]] between notes.
+      </div>
+    )
+  }
+</div>
+
+<script>
+  import('/src/components/graph/graph-loader.js').then(({ mountGraph }) => {
+    const container = document.getElementById('graph-mount');
+    if (container) mountGraph(container);
+  });
+</script>

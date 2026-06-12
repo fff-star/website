@@ -1,0 +1,66 @@
+---
+import { SITE } from '../../lib/constants';
+---
+
+<footer class="footer">
+  <span>
+    &copy; {new Date().getFullYear()} {SITE.author} · Powered by
+    <a href="https://astro.build" target="_blank" rel="noopener noreferrer">
+      Astro
+    </a>
+    &amp; inspired by
+    <a
+      href="https://github.com/adityatelange/hugo-PaperMod"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      PaperMod
+    </a>
+  </span>
+</footer>
+
+<!-- Scroll to top button -->
+<button
+  id="top-link"
+  class="top-link hidden"
+  aria-label="Scroll to top"
+  title="Scroll to top"
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <polyline points="18 15 12 9 6 15"></polyline>
+  </svg>
+</button>
+
+<script>
+  const topLink = document.getElementById('top-link');
+  if (topLink) {
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          if (window.scrollY > 400) {
+            topLink.classList.remove('hidden');
+          } else {
+            topLink.classList.add('hidden');
+          }
+          ticking = false;
+        });
+        ticking = true;
+      }
+    });
+    topLink.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+</script>

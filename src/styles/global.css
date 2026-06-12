@@ -1,0 +1,1073 @@
+/* --- Google Fonts (must precede all other rules) --- */
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+@import 'tailwindcss';
+@import 'katex/dist/katex.min.css';
+
+/* ============================================
+   "Arctic Frost" Design System
+   Cold color palette: icy whites, slate
+   blues, steel grays. Fraunces + Atkinson.
+   ============================================ */
+
+:root {
+  /* Layout */
+  --gap: 24px;
+  --content-gap: 20px;
+  --nav-width: 1024px;
+  --main-width: 720px;
+  --header-height: 64px;
+  --footer-height: 64px;
+  --radius: 6px;
+
+  /* Light theme — icy white & slate */
+  --theme: #f8fafc;
+  --entry: #ffffff;
+  --primary: #0f172a;
+  --secondary: #64748b;
+  --tertiary: #e2e8f0;
+  --content: #1e293b;
+  --accent: #0f6ea0;
+  --accent-hover: #0a5580;
+  --accent-dim: #e0f0f8;
+  --code-block-bg: #172033;
+  --code-bg: #f1f5f9;
+  --border: #e2e8f0;
+  --border-hover: #93c5fd;
+  --shadow: none;
+  --shadow-hover: 0 1px 3px rgba(0, 0, 0, 0.06);
+  color-scheme: light;
+}
+
+[data-theme='dark'] {
+  --theme: #0a0f1a;
+  --entry: #151d2e;
+  --primary: #e2e8f0;
+  --secondary: #94a3b8;
+  --tertiary: #1e293b;
+  --content: #cbd5e1;
+  --accent: #4db8e8;
+  --accent-hover: #80d4f7;
+  --accent-dim: #153545;
+  --code-block-bg: #111827;
+  --code-bg: #1e293b;
+  --border: #1e293b;
+  --border-hover: #3b82f6;
+  --shadow: none;
+  --shadow-hover: 0 1px 3px rgba(0, 0, 0, 0.4);
+  color-scheme: dark;
+}
+
+/* ============================================
+   Base Typography
+   ============================================ */
+
+html {
+  overflow-y: scroll;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: 'Atkinson Hyperlegible', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 18px;
+  line-height: 1.65;
+  word-break: break-word;
+  background: var(--theme);
+  color: var(--primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Fraunces', Georgia, 'Times New Roman', serif;
+  font-weight: 500;
+  line-height: 1.2;
+  margin-top: 0;
+  margin-bottom: 0;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+h1 { font-size: 38px; font-weight: 380; }
+h2 { font-size: 24px; font-weight: 470; }
+h3 { font-size: 20px; font-weight: 450; }
+h4 { font-size: 18px; font-weight: 500; }
+
+p {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: var(--accent-hover);
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+code, kbd, pre, samp {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+code {
+  direction: ltr;
+}
+
+table {
+  width: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+button, input, textarea {
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+/* ============================================
+   Decorative Details
+   ============================================ */
+
+/* Section divider — warm decorative rule */
+.section-divider {
+  border: none;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--tertiary) 15%,
+    var(--tertiary) 85%,
+    transparent
+  );
+  margin: calc(var(--gap) * 2) 0;
+}
+
+/* ============================================
+   Wiki Links
+   ============================================ */
+
+.wiki-link {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 0.2rem;
+  text-decoration-style: dotted;
+  text-decoration-color: var(--tertiary);
+}
+
+.wiki-link:hover {
+  text-decoration-color: var(--accent);
+}
+
+.wiki-link-new {
+  color: var(--secondary);
+  text-decoration: underline;
+  text-underline-offset: 0.2rem;
+  text-decoration-style: wavy;
+  text-decoration-color: var(--tertiary);
+}
+
+/* ============================================
+   Staggered Card Entrance
+   ============================================ */
+
+@keyframes card-enter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.post-entry {
+  animation: card-enter 0.4s ease-out both;
+}
+
+.post-entry:nth-child(1) { animation-delay: 0.05s; }
+.post-entry:nth-child(2) { animation-delay: 0.1s; }
+.post-entry:nth-child(3) { animation-delay: 0.15s; }
+.post-entry:nth-child(4) { animation-delay: 0.2s; }
+.post-entry:nth-child(5) { animation-delay: 0.25s; }
+.post-entry:nth-child(6) { animation-delay: 0.3s; }
+.post-entry:nth-child(7) { animation-delay: 0.35s; }
+.post-entry:nth-child(8) { animation-delay: 0.4s; }
+.post-entry:nth-child(9) { animation-delay: 0.45s; }
+.post-entry:nth-child(10) { animation-delay: 0.5s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .post-entry {
+    animation: none;
+  }
+}
+
+/* ============================================
+   Post Entry Card
+   ============================================ */
+
+.post-entry {
+  position: relative;
+  margin-bottom: var(--gap);
+  padding: calc(var(--gap) - 2px) var(--gap) calc(var(--gap) - 2px) var(--gap);
+  background: var(--entry);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--border);
+  box-shadow: var(--shadow);
+  transition: border-left-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Reset animation on the first-entry (homepage hero) */
+.first-entry.post-entry {
+  animation: none;
+}
+
+.post-entry:hover,
+.post-entry:focus-within {
+  border-left-color: var(--accent);
+  background: var(--accent-dim);
+  box-shadow: var(--shadow-hover);
+}
+
+.entry-header h2 {
+  font-size: 24px;
+  line-height: 1.3;
+  font-weight: 450;
+}
+
+.entry-content {
+  margin: 8px 0;
+  color: var(--secondary);
+  font-size: 15px;
+  line-height: 1.6;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.entry-footer {
+  color: var(--secondary);
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.entry-link {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  border-radius: var(--radius);
+}
+
+/* ============================================
+   First Entry (Homepage Hero)
+   ============================================ */
+
+.first-entry {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 300px;
+  margin: calc(var(--gap) * 2) 0 calc(var(--gap) * 3) 0;
+}
+
+.first-entry .entry-header h1 {
+  font-size: 42px;
+  font-weight: 400;
+  font-style: italic;
+  letter-spacing: -0.015em;
+  line-height: 1.15;
+}
+
+.first-entry .entry-content {
+  font-size: 20px;
+  -webkit-line-clamp: unset;
+  margin: 20px 0;
+  color: var(--secondary);
+  line-height: 1.6;
+}
+
+.first-entry .entry-footer {
+  font-size: 14px;
+}
+
+/* Divider after hero */
+.hero-divider {
+  width: 60px;
+  height: 2px;
+  background: var(--accent);
+  margin-bottom: calc(var(--gap) * 2);
+}
+
+/* ============================================
+   Post Single
+   ============================================ */
+
+.post-title {
+  font-size: 42px;
+  font-weight: 400;
+  letter-spacing: -0.015em;
+}
+
+.post-description {
+  margin-top: 10px;
+  color: var(--secondary);
+  font-size: 18px;
+  font-style: italic;
+}
+
+.post-meta,
+.breadcrumbs {
+  color: var(--secondary);
+  font-size: 16px;
+}
+
+.post-meta a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 0.3rem;
+  text-decoration-style: dotted;
+}
+
+.breadcrumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.breadcrumbs a {
+  font-size: 16px;
+  color: var(--accent);
+}
+
+.post-content {
+  color: var(--content);
+  margin: 32px 0;
+  font-size: 18px;
+  line-height: 1.75;
+}
+
+/* ============================================
+   Post Content — Heading Hierarchy
+   ============================================ */
+
+.post-content h1,
+.md-content h1 {
+  font-size: 32px;
+  font-weight: 500;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.post-content h2,
+.md-content h2 {
+  font-size: 24px;
+  font-weight: 550;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.post-content h3,
+.md-content h3 {
+  font-size: 20px;
+  font-weight: 550;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.post-content h4,
+.md-content h4 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.post-content h1 + p,
+.post-content h2 + p,
+.post-content h3 + p,
+.post-content h4 + p,
+.md-content h1 + p,
+.md-content h2 + p,
+.md-content h3 + p,
+.md-content h4 + p {
+  margin-top: 0;
+}
+
+/* Lists in post content */
+.post-content ul,
+.post-content ol,
+.md-content ul,
+.md-content ol {
+  padding-left: 1.5rem;
+  margin: 0.75rem 0;
+}
+
+.post-content li,
+.md-content li {
+  margin: 0.3rem 0;
+  line-height: 1.65;
+}
+
+.post-content li > ul,
+.post-content li > ol,
+.md-content li > ul,
+.md-content li > ol {
+  margin: 0.2rem 0;
+}
+
+/* Horizontal rule */
+.post-content hr,
+.md-content hr {
+  border: none;
+  height: 1px;
+  background: var(--border);
+  margin: 2rem 0;
+}
+
+/* Drop cap — Fraunces accent, only on blog posts */
+.post-content > p:first-of-type::first-letter {
+  font-family: 'Fraunces', Georgia, serif;
+  float: left;
+  font-size: 3.5em;
+  line-height: 0.65;
+  padding-right: 0.12em;
+  padding-top: 0.04em;
+  color: var(--accent);
+}
+
+/* Strong & emphasis */
+.post-content strong,
+.md-content strong {
+  font-weight: 650;
+  color: var(--primary);
+}
+
+/* Links in content */
+.post-content a,
+.md-content a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+.post-content a:hover,
+.md-content a:hover {
+  color: var(--accent-hover);
+}
+
+/* Images in content */
+.post-content img,
+.md-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius);
+  margin: 1.5rem auto;
+  display: block;
+}
+
+/* Tables in content */
+.post-content table,
+.md-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  font-size: 15px;
+}
+
+.post-content th,
+.md-content th {
+  font-weight: 600;
+  text-align: left;
+  padding: 8px 12px;
+  border-bottom: 2px solid var(--border);
+  color: var(--primary);
+}
+
+.post-content td,
+.md-content td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--content);
+}
+
+.post-content tr:last-child td,
+.md-content tr:last-child td {
+  border-bottom: none;
+}
+
+/* Blockquote — editorial style */
+.post-content blockquote,
+.md-content blockquote {
+  border-left: 3px solid var(--accent);
+  margin: 1.5rem 0;
+  padding: 0.5rem 0 0.5rem 1.5rem;
+  color: var(--secondary);
+  font-style: italic;
+}
+
+.post-content blockquote p,
+.md-content blockquote p {
+  margin: 0;
+}
+
+.post-footer {
+  margin-top: var(--content-gap);
+}
+
+.post-footer > * {
+  margin-bottom: 10px;
+}
+
+.post-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  list-style: none;
+  padding: 0;
+}
+
+.post-tags li {
+  display: inline-block;
+}
+
+.post-tags a {
+  color: var(--accent);
+  font-size: 16px;
+}
+
+.post-tags a:hover {
+  color: var(--accent-hover);
+}
+
+/* ============================================
+   Table of Contents
+   ============================================ */
+
+details.toc {
+  margin-bottom: var(--content-gap);
+  background: var(--code-bg);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+}
+
+[data-theme='dark'] details.toc {
+  background: var(--entry);
+}
+
+details.toc summary {
+  padding: 0.5rem 1.2rem;
+  border-radius: var(--radius);
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--secondary);
+}
+
+details summary {
+  cursor: pointer;
+  display: list-item;
+  width: 100%;
+  margin-inline-start: 0;
+  user-select: none;
+}
+
+details .title {
+  display: inline;
+  font-weight: 500;
+  margin-inline-start: 0.2rem;
+}
+
+details .inner {
+  margin: 0 1.5rem;
+  padding-bottom: 0.8rem;
+}
+
+details li ul {
+  margin-inline-start: var(--gap);
+}
+
+/* ============================================
+   Code Blocks (PaperMod dark-block style)
+   ============================================ */
+
+.post-content code:not(pre code),
+.md-content code:not(pre code) {
+  color: var(--primary);
+  background: var(--code-bg);
+  border-radius: 4px;
+  padding: 0.15em 0.4em;
+  font-size: 0.85em;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+.post-content pre,
+.md-content pre,
+.post-content pre code,
+.md-content pre code,
+pre.astro-code,
+pre.astro-code code {
+  position: relative;
+  display: grid;
+  margin: 1.5rem 0;
+  padding: 16px;
+  color: #d5d5d6 !important;
+  background: var(--code-block-bg) !important;
+  border-radius: var(--radius);
+  overflow-x: auto;
+  word-break: break-all;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.post-content pre.astro-code,
+.md-content pre.astro-code {
+  background-color: var(--code-block-bg) !important;
+}
+
+[data-theme='dark'] .post-content pre.astro-code,
+[data-theme='dark'] .md-content pre.astro-code {
+  background-color: var(--code-block-bg) !important;
+}
+
+pre.astro-code {
+  --shiki-dark-bg: var(--code-block-bg);
+}
+
+pre.astro-code .line {
+  min-height: 1.6em;
+}
+
+/* Copy code button — parent pre needs position: relative */
+.post-content pre,
+.md-content pre,
+pre.astro-code {
+  position: relative;
+}
+
+.copy-code {
+  display: none;
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  color: rgba(213, 213, 214, 0.7);
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-size: 12px;
+  user-select: none;
+  cursor: pointer;
+  border: none;
+  transition: background 0.15s ease;
+}
+
+.copy-code:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+}
+
+div.highlight:hover .copy-code,
+pre:hover .copy-code,
+.post-content pre:hover .copy-code,
+.md-content pre:hover .copy-code {
+  display: block;
+}
+
+h1 code, h2 code, h3 code, h4 code {
+  font-size: inherit;
+}
+
+/* ============================================
+   Pagination
+   ============================================ */
+
+.pagination {
+  display: flex;
+}
+
+.pagination a {
+  color: var(--theme);
+  font-size: 13px;
+  line-height: 36px;
+  background: var(--primary);
+  border-radius: calc(36px / 2);
+  padding: 0 16px;
+  transition: opacity 0.15s ease;
+}
+
+.pagination a:hover {
+  opacity: 0.85;
+  color: var(--theme);
+}
+
+.pagination .next {
+  margin-inline-start: auto;
+}
+
+.paginav {
+  display: flex;
+  line-height: 1.2;
+}
+
+.paginav .title {
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  color: var(--secondary);
+}
+
+.paginav a {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem;
+  border-radius: var(--radius);
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.paginav a:hover {
+  background: var(--tertiary);
+  border-color: var(--secondary);
+  color: var(--primary);
+}
+
+.paginav span:hover:not(.title) {
+  text-decoration: underline;
+  text-underline-offset: 0.2rem;
+}
+
+.paginav .next {
+  margin-inline-start: auto;
+  text-align: right;
+}
+
+/* ============================================
+   Footer
+   ============================================ */
+
+.footer {
+  font-size: 13px;
+  color: var(--secondary);
+  max-width: calc(var(--main-width) + var(--gap) * 2);
+  margin: auto;
+  padding: calc((var(--footer-height) - var(--gap)) / 2) var(--gap);
+  text-align: center;
+  line-height: 24px;
+}
+
+.footer a {
+  color: var(--accent);
+}
+
+.footer a:hover {
+  color: var(--accent-hover);
+}
+
+/* ============================================
+   Social Icons
+   ============================================ */
+
+.social-icons a {
+  display: inline-flex;
+  padding: 10px;
+  color: var(--secondary);
+  transition: color 0.2s ease;
+}
+
+.social-icons a:hover {
+  color: var(--accent);
+}
+
+.social-icons a svg {
+  height: 24px;
+  width: 24px;
+}
+
+/* ============================================
+   Archive Page
+   ============================================ */
+
+.archive-posts {
+  width: 100%;
+  font-size: 16px;
+}
+
+.archive-year {
+  margin-top: 48px;
+}
+
+.archive-year:not(:last-of-type) {
+  border-bottom: 2px solid var(--border);
+}
+
+.archive-year h2 {
+  font-size: 32px;
+  font-weight: 400;
+}
+
+.archive-month {
+  display: flex;
+  align-items: flex-start;
+  padding: 12px 0;
+}
+
+.archive-month:not(:last-of-type) {
+  border-bottom: 1px solid var(--border);
+}
+
+.archive-month-header {
+  margin: 25px 0;
+  width: 200px;
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.archive-entry {
+  position: relative;
+  padding: 5px;
+  margin: 10px 0;
+}
+
+.archive-entry-title {
+  margin: 5px 0;
+  font-weight: 400;
+}
+
+.archive-entry-title a {
+  color: var(--primary);
+}
+
+.archive-entry-title a:hover {
+  color: var(--accent);
+}
+
+.archive-count,
+.archive-meta {
+  color: var(--secondary);
+  font-size: 14px;
+}
+
+/* ============================================
+   Knowledge Graph
+   ============================================ */
+
+.graph-container {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--entry);
+}
+
+/* ============================================
+   Backlinks Section
+   ============================================ */
+
+.backlinks {
+  margin-top: var(--content-gap);
+  padding: var(--gap);
+  background: var(--entry);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+}
+
+.backlinks h3 {
+  font-size: 16px;
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+.backlinks ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.backlinks li {
+  padding: 4px 0;
+}
+
+.backlinks a {
+  color: var(--accent);
+}
+
+.backlinks a:hover {
+  color: var(--accent-hover);
+}
+
+/* ============================================
+   Callout Styling
+   ============================================ */
+
+.callout {
+  --callout-color: var(--accent);
+  border-left: 3px solid var(--callout-color);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  padding: 0.8rem 1.2rem;
+  margin: 1.2rem 0;
+  background: var(--code-bg);
+}
+
+/* ============================================
+   Top Link Button
+   ============================================ */
+
+.top-link {
+  font-size: 12px;
+  color: var(--secondary);
+  position: fixed;
+  bottom: 3rem;
+  right: 2rem;
+  z-index: 99;
+  background: var(--entry);
+  border: 1px solid var(--border);
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 8px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow);
+  transition: visibility 0.3s ease, opacity 0.3s ease, background 0.2s ease;
+}
+
+.top-link:hover {
+  background: var(--tertiary);
+  color: var(--primary);
+}
+
+.hidden {
+  visibility: hidden;
+  opacity: 0;
+}
+
+/* ============================================
+   Tag Cloud (on /tags/)
+   ============================================ */
+
+.tags-cloud a {
+  display: block;
+  padding: 5px 12px;
+  background: var(--tertiary);
+  color: var(--primary);
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 500;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.tags-cloud a:hover {
+  background: var(--accent);
+  color: var(--theme);
+  transform: scale(1.05);
+}
+
+/* ============================================
+   Responsive Design
+   ============================================ */
+
+@media (max-width: 768px) {
+  :root {
+    --gap: 16px;
+  }
+
+  .first-entry {
+    min-height: 240px;
+  }
+
+  .first-entry .entry-header h1 {
+    font-size: 36px;
+  }
+
+  .post-title {
+    font-size: 32px;
+  }
+
+  .page-header h1 {
+    font-size: 32px;
+  }
+
+  .archive-month {
+    flex-direction: column;
+  }
+
+  .archive-month-header {
+    margin: 10px 0;
+    width: auto;
+  }
+}
+
+@media (max-width: 900px) {
+  .top-link {
+    bottom: 4rem;
+  }
+}
+
+/* Respect user motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .post-entry,
+  .post-entry:hover {
+    transition: none;
+    transform: none;
+  }
+
+  .top-link {
+    transition: none;
+  }
+
+  .tags-cloud a,
+  .tags-cloud a:hover {
+    transition: none;
+    transform: none;
+  }
+}
+
+/* ============================================
+   Accessibility
+   ============================================ */
+
+a[href="#main-content"]:focus {
+  top: 0;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+details summary:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] {
+  scroll-margin-top: calc(var(--header-height) + 1rem);
+}

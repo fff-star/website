@@ -1,0 +1,41 @@
+---
+import { getCollection } from 'astro:content';
+
+interface Props {
+  currentSlug: string;
+}
+
+const { currentSlug } = Astro.props;
+
+// Build backlinks: find all notes that link to the current one
+const allNotes = await getCollection('notes', ({ data }) => data.publish && !data.draft);
+const backlinks = allNotes.filter((note) => {
+  const content = note.body ?? '';
+  // Match [[current-slug]] or [[current-slug|alias]]
+  const pattern = new RegExp(
+    `\\[\\[${currentSlug.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?:\\|[^\\]]+)?\\]\\]`,
+    'i',
+  );
+  return pattern.test(content);
+});
+---
+
+{
+  backlinks.length > 0 && (
+    <section class="backlinks">
+      <h3>Linked References</h3>
+      <p style="color: var(--secondary); font-size: 14px; margin-bottom: 8px;">
+        {backlinks.length} note{backlinks.length > 1 ? 's' : ''} link{backlinks.length === 1 ? 's' : ''} here
+      </p>
+      <ul>
+        {backlinks.map((note) => (
+          <li>
+            <a href={`/notes/${note.id.replace(/\.md$/, '')}/`}>
+              {note.data.title}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}

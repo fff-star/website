@@ -1,0 +1,21 @@
+---
+interface Props {
+  date: Date;
+  readingTime?: string;
+  author?: string;
+}
+
+const { date, readingTime, author } = Astro.props;
+
+function formatDate(d: Date): string {
+  return d.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+}
+---
+
+<span>{formatDate(date)}</span>
+{readingTime && <span class="text-secondary">&nbsp;· {readingTime}</span>}
+{author && <span class="text-secondary">&nbsp;· {author}</span>}
