@@ -1,29 +1,36 @@
 ---
-import BaseLayout from '../../components/layout/BaseLayout.astro';
-import { getCollection, getEntry, render } from 'astro:content';
-import type { CollectionEntry } from 'astro:content';
+import BaseLayout from '../../../components/layout/BaseLayout.astro';
+import { getCollection, render } from 'astro:content';
 import GithubSlugger from 'github-slugger';
+import { useTranslations } from '../../../i18n/utils';
+import type { Locale } from '../../../content.config';
 
 export async function getStaticPaths() {
-  const posts = await getCollection('blog');
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
   return posts.map((post) => ({
-    params: { slug: post.id.replace(/\.md$/, '') },
+    params: {
+      lang: post.id.split('/')[0],
+      slug: post.id.replace(/\.md$/, '').split('/').slice(1).join('/'),
+    },
     props: { post },
   }));
 }
 
+const { lang } = Astro.params as { lang: Locale };
+const t = useTranslations(lang);
 const { post } = Astro.props;
 const { Content } = await render(post);
 ---
 
 <BaseLayout
+  lang={lang}
   title={post.data.title}
   description={post.data.description}
   ogType="article"
 >
   <!-- Breadcrumbs -->
   <nav class="breadcrumbs">
-    <a href="/blog/">Blog</a>
+    <a href={`/${lang}/blog/`}>{t('blog.title')}</a>
     <span>/</span>
     <span>{post.data.title}</span>
   </nav>
@@ -38,7 +45,7 @@ const { Content } = await render(post);
     post.body && (
       <details class="toc toc-spaced">
         <summary>
-          <span class="title">Table of Contents</span>
+          <span class="title">{t('post.toc')}</span>
         </summary>
         <div class="inner">
           <nav>
@@ -73,5 +80,4 @@ const { Content } = await render(post);
   <div class="post-content md-content">
     <Content />
   </div>
-
 </BaseLayout>

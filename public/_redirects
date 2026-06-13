@@ -1,1 +1,8 @@
-/en/*  /:splat  200
+# Legacy URL redirects — old site had flat routes; new site uses /en/ and /zh/ prefixes.
+# Default locale is English (/en/).
+/               /en/            301
+/blog/*         /en/blog/:splat   301
+/notes/*        /en/notes/:splat  301
+/tags/*         /en/tags/:splat   301
+/search         /en/search        301
+/rss.xml        /en/rss.xml       301

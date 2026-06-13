@@ -1,6 +1,7 @@
 import { getCollection } from 'astro:content';
+import type { Locale } from '../content.config';
 
-export interface GraphNode {
+interface GraphNode {
   id: string;
   name: string;
   val: number;
@@ -9,7 +10,7 @@ export interface GraphNode {
   url: string;
 }
 
-export interface GraphLink {
+interface GraphLink {
   source: string;
   target: string;
   weight: number;
@@ -37,21 +38,24 @@ function extractWikilinks(content: string): string[] {
   return [...new Set(links)];
 }
 
-/** Get the folder path for a note id (e.g. "demos/hello-world" → "demos") */
+/** Get the folder path for a note id (e.g. "en/demos/hello-world" → "demos") */
 function getFolder(id: string): string {
-  const idx = id.lastIndexOf('/');
-  return idx === -1 ? '' : id.slice(0, idx);
+  // id format: "en/folder/note" or "zh/folder/note"
+  const parts = id.split('/');
+  return parts.length >= 3 ? parts[1] : '';
 }
 
-/** Get just the filename from an id (e.g. "demos/hello-world" → "hello-world") */
+/** Get just the filename from an id (e.g. "en/demos/hello-world" → "hello-world") */
 function getFilename(id: string): string {
   const idx = id.lastIndexOf('/');
   return idx === -1 ? id : id.slice(idx + 1);
 }
 
-/** List all unique folders in the vault */
-export async function getFolders(): Promise<string[]> {
-  const notes = await getCollection('notes', ({ data }) => data.publish && !data.draft);
+/** List all unique folders in the vault for a given locale */
+export async function getFolders(locale: Locale): Promise<string[]> {
+  const notes = await getCollection('notes', ({ data, id }) =>
+    data.publish && !data.draft && id.startsWith(`${locale}/`),
+  );
   const folders = new Set<string>();
   for (const note of notes) {
     const id = note.id.replace(/\.md$/, '');
@@ -62,23 +66,33 @@ export async function getFolders(): Promise<string[]> {
 }
 
 /**
- * Build graph scoped to a single folder.
+ * Build graph scoped to a single folder within a locale.
  * Wiki-links only connect notes within the same folder.
+ * Accepts optional pre-fetched notes to avoid repeated getCollection calls.
  */
-export async function buildFolderGraph(folder: string): Promise<GraphData> {
-  const allNotes = await getCollection('notes', ({ data }) => data.publish && !data.draft);
+export async function buildFolderGraph(
+  folder: string,
+  locale: Locale,
+  preFetchedNotes?: Awaited<ReturnType<typeof getCollection<'notes'>>>,
+): Promise<GraphData> {
+  const allNotes = preFetchedNotes ?? await getCollection('notes', ({ data, id }) =>
+    data.publish && !data.draft && id.startsWith(`${locale}/`),
+  );
 
   // Filter to this folder
+  const prefix = `${locale}/${folder}/`;
   const notes = allNotes.filter((n) => {
     const id = n.id.replace(/\.md$/, '');
-    return id.startsWith(folder + '/');
+    return id.startsWith(prefix);
   });
 
   // Build map of filename → full id for link resolution
   const nameToId = new Map<string, string>();
   for (const n of notes) {
     const id = n.id.replace(/\.md$/, '');
-    nameToId.set(getFilename(id), id);
+    // Slugify filename to match extractWikilinks output
+    const slugged = getFilename(id).toLowerCase().replace(/\s+/g, '-');
+    nameToId.set(slugged, id);
   }
 
   const linkSet = new Map<string, number>();
@@ -125,7 +139,7 @@ export async function buildFolderGraph(folder: string): Promise<GraphData> {
       val,
       backlinks,
       color: TAG_COLORS[colorIdx],
-      url: `/notes/${id}/`,
+      url: `/${locale}/notes/${id.split('/').slice(1).join('/')}/`,
     });
   }
 
@@ -141,16 +155,20 @@ export async function buildFolderGraph(folder: string): Promise<GraphData> {
 }
 
 /**
- * Build graph for ALL folders combined (overview).
+ * Build graph for ALL folders combined (overview) for a given locale.
  * Edges only connect notes within the same folder.
  */
-export async function buildGraph(): Promise<GraphData> {
-  const folders = await getFolders();
+export async function buildGraph(locale: Locale): Promise<GraphData> {
+  const folders = await getFolders(locale);
+  // Fetch notes once, share across all folder graphs
+  const allNotes = await getCollection('notes', ({ data, id }) =>
+    data.publish && !data.draft && id.startsWith(`${locale}/`),
+  );
   const allNodes: GraphNode[] = [];
   const allLinks: GraphLink[] = [];
 
   for (const folder of folders) {
-    const data = await buildFolderGraph(folder);
+    const data = await buildFolderGraph(folder, locale, allNotes);
     allNodes.push(...data.nodes);
     allLinks.push(...data.links);
   }
@@ -159,13 +177,15 @@ export async function buildGraph(): Promise<GraphData> {
 }
 
 /**
- * Local graph: current note + its neighbors, all within the same folder.
+ * Local graph: current note + its neighbors, all within the same folder and locale.
  */
-export async function buildLocalGraph(currentSlug: string): Promise<GraphData> {
-  const folder = getFolder(currentSlug.replace(/\.md$/, ''));
-  const folderGraph = await buildFolderGraph(folder);
+export async function buildLocalGraph(currentSlug: string, locale: Locale): Promise<GraphData> {
+  // currentSlug may or may not have locale prefix already
+  const id = currentSlug.replace(/\.md$/, '');
+  const folder = getFolder(id.startsWith(`${locale}/`) ? id : `${locale}/${id}`);
+  const folderGraph = await buildFolderGraph(folder, locale);
 
-  const currentId = currentSlug.replace(/\.md$/, '');
+  const currentId = id.startsWith(`${locale}/`) ? id : `${locale}/${id}`;
 
   const neighborIds = new Set<string>();
   neighborIds.add(currentId);

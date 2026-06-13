@@ -1,0 +1,126 @@
+---
+import BaseLayout from '../../components/layout/BaseLayout.astro';
+import { getBlogPosts, getNotes } from '../../lib/content';
+import { getSiteConfig, SITE } from '../../i18n/site';
+import { useTranslations } from '../../i18n/utils';
+import type { Locale } from '../../content.config';
+
+export function getStaticPaths() {
+  return [
+    { params: { lang: 'en' } },
+    { params: { lang: 'zh' } },
+  ];
+}
+
+const { lang } = Astro.params as { lang: Locale };
+const siteConfig = getSiteConfig(lang);
+const t = useTranslations(lang);
+
+const blogPosts = await getBlogPosts(lang);
+const sortedBlog = blogPosts.slice(0, 6);
+
+const allNotes = await getNotes(lang);
+const folderSet = new Map<string, number>();
+for (const note of allNotes) {
+  const id = note.id.replace(/\.md$/, '');
+  const parts = id.split('/');
+  if (parts.length > 2) {
+    // id is "zh/folder/note" → folder is parts[1]
+    const folder = parts[1];
+    folderSet.set(folder, (folderSet.get(folder) ?? 0) + 1);
+  }
+}
+const folders = [...folderSet.entries()].sort((a, b) => a[0].localeCompare(b[0]));
+---
+
+<BaseLayout lang={lang}>
+  <!-- Hero -->
+  <section class="first-entry animate-in animate-in-1">
+    <header class="entry-header">
+      <h1>{siteConfig.title}</h1>
+    </header>
+    <div class="entry-content">
+      <p set:html={siteConfig.description.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')} />
+    </div>
+    <footer class="entry-footer">
+      <div class="social-icons">
+        {SITE.social.github && (
+          <a href={SITE.social.github} target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="height: 20px; width: 20px;">
+              <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+            </svg>
+          </a>
+        )}
+        {SITE.social.codeberg && (
+          <a href={SITE.social.codeberg} target="_blank" rel="noopener noreferrer" aria-label="Codeberg">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="height: 20px; width: 20px;">
+              <path d="M12 1A11 11 0 0 0 1 12a11 11 0 0 0 1.7 6.4L12 6l9.3 12.4A11 11 0 0 0 23 12 11 11 0 0 0 12 1z"/>
+              <path d="M21.3 18.4 12 6l4.4 16.8a11 11 0 0 0 4.9-4.4z" fill-opacity="0.5"/>
+            </svg>
+          </a>
+        )}
+      </div>
+    </footer>
+  </section>
+
+  <!-- Recent Writing -->
+  {
+    sortedBlog.length > 0 && (
+      <section class="animate-in animate-in-2">
+        <div class="section-label">
+          <span class="section-label-text">{t('home.recent_writing')}</span>
+          <div class="section-label-line"></div>
+          <a href={`/${lang}/blog/`} class="section-label-link">{t('home.all_posts')}</a>
+        </div>
+        <div class="blog-list">
+          {sortedBlog.slice(0, 3).map((post) => (
+            <article class="blog-item">
+              <span class="blog-item-date">
+                {post.data.date.toLocaleDateString(lang === 'zh' ? 'zh-CN' : 'en-US', {
+                  month: 'short',
+                  day: 'numeric',
+                  year: 'numeric',
+                })}
+              </span>
+              <div class="blog-item-main">
+                <a href={`/${lang}/blog/${post.id.replace(/\.md$/, '').split('/').slice(1).join('/')}/`} class="blog-item-title">
+                  {post.data.title}
+                </a>
+                {post.data.description && (
+                  <p class="blog-item-desc">{post.data.description}</p>
+                )}
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  {
+    sortedBlog.length === 0 && (
+      <p class="empty-message" style="padding: 1rem 0;">{t('home.no_posts')}</p>
+    )
+  }
+
+  <!-- Note Vaults -->
+  {
+    folders.length > 0 && (
+      <section class="home-notes animate-in animate-in-3" style="margin-top: 48px;">
+        <div class="section-label">
+          <span class="section-label-text">{t('home.note_vaults')}</span>
+          <div class="section-label-line"></div>
+          <a href={`/${lang}/notes/`} class="section-label-link">{t('home.all_notes')}</a>
+        </div>
+        <div>
+          {folders.map(([folder, count]) => (
+            <div class="home-note-item">
+              <a href={`/${lang}/notes/${folder}/`} class="home-note-title">{folder}/</a>
+              <span class="home-note-count">{t('notes.count', { count })}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+    )
+  }
+</BaseLayout>

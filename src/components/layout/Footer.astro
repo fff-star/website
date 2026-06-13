@@ -1,10 +1,18 @@
 ---
-import { SITE } from '../../lib/constants';
+import { getSiteConfig } from '../../i18n/site';
+import type { Locale } from '../../content.config';
+
+export interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const siteConfig = getSiteConfig(lang);
 ---
 
 <footer class="footer">
   <div class="footer-inner">
-    <span>&copy; {new Date().getFullYear()} {SITE.author}</span>
+    <span>&copy; {new Date().getFullYear()} {siteConfig.author}</span>
     <span class="footer-sep">&middot;</span>
     <span>
       <a
@@ -15,8 +23,6 @@ import { SITE } from '../../lib/constants';
         CC BY-NC-SA 4.0
       </a>
     </span>
-    <span class="footer-sep">&middot;</span>
-    <a href="/rss.xml">RSS</a>
   </div>
 </footer>
 

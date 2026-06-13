@@ -1,20 +1,24 @@
 ---
 import { buildGraph, buildFolderGraph, buildLocalGraph, type GraphData } from '../../lib/graph';
+import { useTranslations } from '../../i18n/utils';
+import type { Locale } from '../../content.config';
 
 interface Props {
   localSlug?: string;
   folder?: string;
+  lang: Locale;
 }
 
-const { localSlug, folder } = Astro.props;
+const { localSlug, folder, lang } = Astro.props;
+const t = useTranslations(lang);
 
 let graphData: GraphData;
 if (localSlug) {
-  graphData = await buildLocalGraph(localSlug);
+  graphData = await buildLocalGraph(localSlug, lang);
 } else if (folder) {
-  graphData = await buildFolderGraph(folder);
+  graphData = await buildFolderGraph(folder, lang);
 } else {
-  graphData = await buildGraph();
+  graphData = await buildGraph(lang);
 }
 ---
 
@@ -26,7 +30,7 @@ if (localSlug) {
   {
     graphData.nodes.length === 0 && (
       <div class="graph-fallback">
-        No connections in this folder yet. Add [[wiki-links]] between notes.
+        {t('graph.no_connections')}
       </div>
     )
   }

@@ -1,21 +1,6 @@
 import { dict, type Locale, type TranslationKey, defaultLocale } from './dict';
 
-/**
- * Resolve the current locale from a URL pathname or query param.
- * Production: "/en/notes/" → "en", "/notes/" → "zh"
- * Dev fallback: "/notes/?lang=en" → "en"
- */
-export function localeFromPath(pathname: string, search?: string): Locale {
-  // Check path prefix first (production)
-  const seg = pathname.split('/')[1];
-  if (seg === 'en') return 'en';
-  // Check ?lang= query param (dev mode fallback)
-  if (search) {
-    const m = search.match(/[?&]lang=([a-z]{2})/);
-    if (m && (m[1] === 'en' || m[1] === 'zh')) return m[1] as Locale;
-  }
-  return defaultLocale;
-}
+export { type Locale, type TranslationKey, defaultLocale };
 
 /**
  * Return a translation function bound to a locale.
@@ -34,11 +19,17 @@ export function useTranslations(locale: Locale) {
 }
 
 /**
- * Get the locale-prefixed path for a given locale.
- * "/notes/" in "en" → "/en/notes/"
+ * Build a locale-prefixed path.
+ * path("/blog/", "en") → "/en/blog/"
  */
 export function localePath(path: string, locale: Locale): string {
   const clean = path.replace(/\/$/, '') || '';
-  if (locale === defaultLocale) return clean || '/';
   return `/${locale}${clean}`;
+}
+
+/**
+ * Get the other locale (for language switcher).
+ */
+export function otherLocale(locale: Locale): Locale {
+  return locale === 'en' ? 'zh' : 'en';
 }

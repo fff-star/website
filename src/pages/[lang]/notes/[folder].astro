@@ -1,0 +1,54 @@
+---
+import BaseLayout from '../../../components/layout/BaseLayout.astro';
+import { getNotes } from '../../../lib/content';
+import { getCollection, render } from 'astro:content';
+import { useTranslations } from '../../../i18n/utils';
+import type { Locale } from '../../../content.config';
+
+export async function getStaticPaths() {
+  const allNotes = await getCollection('notes', ({ data }) => data.publish && !data.draft);
+  const folderSet = new Set<string>();
+  for (const note of allNotes) {
+    const id = note.id.replace(/\.md$/, '');
+    const parts = id.split('/');
+    if (parts.length >= 3) {
+      // "en/folder/..." or "zh/folder/..."
+      folderSet.add(`${parts[0]}:${parts[1]}`);
+    }
+  }
+  return [...folderSet].map((entry) => {
+    const [lang, folder] = entry.split(':');
+    return { params: { lang, folder } };
+  });
+}
+
+const { lang, folder } = Astro.params as { lang: Locale; folder: string };
+const t = useTranslations(lang);
+
+const allNotes = await getNotes(lang);
+// Check for index.md — id is "en/folder/index" etc.
+const indexNote = allNotes.find((n) => n.id.replace(/\.md$/, '') === `${lang}/${folder}/index`);
+const indexContent = indexNote ? await render(indexNote) : null;
+---
+
+<BaseLayout lang={lang} title={`${folder}/`}>
+  <nav class="breadcrumbs">
+    <a href={`/${lang}/notes/`}>{t('notes.breadcrumb')}</a>
+    <span>/</span>
+    <span>{folder}/</span>
+  </nav>
+
+  <header class="page-header">
+    <h1>{folder}/</h1>
+  </header>
+
+  {
+    indexContent ? (
+      <div class="post-content md-content">
+        <indexContent.Content />
+      </div>
+    ) : (
+      <p style="color: var(--secondary);">{t('notes.no_index')}</p>
+    )
+  }
+</BaseLayout>

@@ -1,6 +1,6 @@
 export type Locale = 'zh' | 'en';
 
-export const defaultLocale: Locale = 'zh';
+export const defaultLocale: Locale = 'en';
 
 export type TranslationKey = keyof typeof dict.zh;
 
@@ -17,7 +17,6 @@ export const dict = {
 
     // Footer
     'footer.built_with': '由',
-    'footer.rss': 'RSS',
 
     // Search
     'search.placeholder': '搜索...',
@@ -71,14 +70,13 @@ export const dict = {
     'header.theme_toggle': 'Toggle dark mode',
 
     'footer.built_with': 'Built with',
-    'footer.rss': 'RSS',
 
     'search.placeholder': 'Search...',
     'search.title': 'Search',
 
     'tags.title': 'Tags',
     'tags.no_tags': 'No tags yet',
-    'tags.count': '{count} post{count, plural, one {} other {s}}',
+    'tags.count': '{count} posts',
     'tags.back': '← All tags',
     'tags.no_posts': 'No posts with this tag',
 
@@ -87,7 +85,7 @@ export const dict = {
 
     'notes.title': 'Notes',
     'notes.no_notes': 'No notes published yet',
-    'notes.count': '{count} note{count, plural, one {} other {s}}',
+    'notes.count': '{count} notes',
     'notes.graph': 'Graph →',
     'notes.no_index': 'No index.md in this folder.',
     'notes.breadcrumb': 'Notes',

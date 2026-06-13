@@ -1,0 +1,45 @@
+---
+import BaseLayout from '../../../components/layout/BaseLayout.astro';
+import { getBlogPosts } from '../../../lib/content';
+import { useTranslations } from '../../../i18n/utils';
+import type { Locale } from '../../../content.config';
+
+export function getStaticPaths() {
+  return [
+    { params: { lang: 'en' } },
+    { params: { lang: 'zh' } },
+  ];
+}
+
+const { lang } = Astro.params as { lang: Locale };
+const t = useTranslations(lang);
+
+const posts = await getBlogPosts(lang);
+
+const tagCounts = new Map<string, number>();
+for (const post of posts) {
+  for (const rawTag of post.data.tags) {
+    const tag = String(rawTag);
+    if (tag.includes('/')) continue;
+    tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1);
+  }
+}
+const sortedTags = [...tagCounts.entries()].sort((a, b) => a[0].localeCompare(b[0]));
+---
+
+<BaseLayout lang={lang} title={t('tags.title')}>
+  <header class="page-header">
+    <h1>{t('tags.title')}</h1>
+  </header>
+
+  {sortedTags.length === 0 && <p>{t('tags.no_tags')}</p>}
+
+  <div class="tag-list">
+    {sortedTags.map(([tag, count]) => (
+      <div class="tag-item">
+        <a href={`/${lang}/tags/${tag}/`}>{tag}</a>
+        <span class="tag-count">{t('tags.count', { count })}</span>
+      </div>
+    ))}
+  </div>
+</BaseLayout>

@@ -208,6 +208,26 @@ button, input, textarea {
   text-decoration-color: var(--accent);
 }
 
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: var(--gap);
+}
+
+.locale-switch {
+  color: var(--secondary);
+  font-weight: 450;
+  font-size: 16px;
+  text-decoration: none;
+  text-underline-offset: 0.4em;
+  text-decoration-thickness: 2px;
+  transition: color 0.15s ease;
+}
+
+.locale-switch:hover {
+  color: var(--primary);
+}
+
 /* ============================================
    Page Header
    ============================================ */

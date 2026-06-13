@@ -1,7 +1,8 @@
 ---
 import Header from './Header.astro';
 import Footer from './Footer.astro';
-import { SITE } from '../../lib/constants';
+import { getSiteConfig, SITE } from '../../i18n/site';
+import type { Locale } from '../../content.config';
 import '../../styles/global.css';
 
 export interface Props {
@@ -9,20 +10,24 @@ export interface Props {
   description?: string;
   image?: string;
   ogType?: string;
+  lang: Locale;
 }
 
 const {
   title,
-  description = SITE.description,
+  description: descProp,
   image = '/favicon.svg',
   ogType = 'website',
+  lang,
 } = Astro.props;
 
-const pageTitle = title ? `${title} · ${SITE.title}` : SITE.title;
+const siteConfig = getSiteConfig(lang);
+const description = descProp ?? siteConfig.description.replace(/\*\*(.+?)\*\*/g, '$1');
+const pageTitle = title ? `${title} · ${siteConfig.title}` : siteConfig.title;
 ---
 
 <!DOCTYPE html>
-<html lang={SITE.lang} data-theme="light">
+<html lang={lang} data-theme="light">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -73,25 +78,17 @@ const pageTitle = title ? `${title} · ${SITE.title}` : SITE.title;
     <!-- Canonical -->
     <link rel="canonical" href={new URL(Astro.url.pathname, SITE.url).href} />
 
-    <!-- RSS -->
-    <link
-      rel="alternate"
-      type="application/rss+xml"
-      title={SITE.title}
-      href="/rss.xml"
-    />
-
     <!-- Styles handled by Astro CSS import -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   </head>
   <body>
     <!-- Skip to content (a11y) -->
     <a href="#main-content" class="skip-link">Skip to content</a>
-    <Header />
+    <Header {lang} />
     <main id="main-content" class="main">
       <slot />
     </main>
-    <Footer />
+    <Footer {lang} />
 
     <!-- Copy button for code blocks -->
     <script is:inline>

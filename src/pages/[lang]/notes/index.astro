@@ -1,0 +1,59 @@
+---
+import BaseLayout from '../../../components/layout/BaseLayout.astro';
+import { getNotes } from '../../../lib/content';
+import { useTranslations } from '../../../i18n/utils';
+import type { Locale } from '../../../content.config';
+
+export function getStaticPaths() {
+  return [
+    { params: { lang: 'en' } },
+    { params: { lang: 'zh' } },
+  ];
+}
+
+const { lang } = Astro.params as { lang: Locale };
+const t = useTranslations(lang);
+
+const notes = await getNotes(lang);
+
+// Find folders: notes whose id contains a slash beyond locale prefix
+const folderSet = new Set<string>();
+
+for (const note of notes) {
+  const id = note.id.replace(/\.md$/, '');
+  const parts = id.split('/');
+  // id is "en/folder/note" or "zh/folder/note"
+  if (parts.length > 2) {
+    folderSet.add(parts[1]);
+  }
+}
+
+const folders = [...folderSet].sort();
+---
+
+<BaseLayout lang={lang} title={t('notes.title')}>
+  <header class="page-header">
+    <h1>{t('notes.title')}</h1>
+  </header>
+
+  {notes.length === 0 && <p>{t('notes.no_notes')}</p>}
+
+  {folders.map((folder) => {
+    const count = notes.filter((n) => {
+      const id = n.id.replace(/\.md$/, '');
+      return id.startsWith(`${lang}/${folder}/`);
+    }).length;
+    return (
+      <div class="folder-item">
+        <a href={`/${lang}/notes/${folder}/`}>{folder}/</a>
+        <span class="count">{t('notes.count', { count })}</span>
+        <a
+          href={`/${lang}/notes/graph/?folder=${folder}`}
+          class="graph-link"
+        >
+          {t('notes.graph')}
+        </a>
+      </div>
+    );
+  })}
+</BaseLayout>

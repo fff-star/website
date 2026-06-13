@@ -1,16 +1,23 @@
 ---
-import BaseLayout from '../../components/layout/BaseLayout.astro';
+import BaseLayout from '../../../components/layout/BaseLayout.astro';
 import { getCollection, render } from 'astro:content';
 import GithubSlugger from 'github-slugger';
+import { useTranslations } from '../../../i18n/utils';
+import type { Locale } from '../../../content.config';
 
 export async function getStaticPaths() {
-  const notes = await getCollection('notes');
+  const notes = await getCollection('notes', ({ data }) => data.publish && !data.draft);
   return notes.map((note) => ({
-    params: { slug: note.id.replace(/\.md$/, '') },
+    params: {
+      lang: note.id.split('/')[0],
+      slug: note.id.replace(/\.md$/, '').split('/').slice(1).join('/'),
+    },
     props: { note },
   }));
 }
 
+const { lang } = Astro.params as { lang: Locale };
+const t = useTranslations(lang);
 const { note } = Astro.props;
 const { Content } = await render(note);
 
@@ -22,13 +29,14 @@ const description =
 ---
 
 <BaseLayout
+  lang={lang}
   title={note.data.title}
   description={description}
   ogType="article"
 >
   <!-- Breadcrumbs -->
   <nav class="breadcrumbs">
-    <a href="/notes/">Notes</a>
+    <a href={`/${lang}/notes/`}>{t('notes.breadcrumb')}</a>
     <span>/</span>
     <span>{note.data.title}</span>
   </nav>
@@ -39,7 +47,7 @@ const description =
     <div class="post-meta post-meta-top">
       {note.data.date && (
         <span>
-          {note.data.date.toLocaleDateString('en-US', {
+          {note.data.date.toLocaleDateString(lang === 'zh' ? 'zh-CN' : 'en-US', {
             year: 'numeric',
             month: 'long',
             day: 'numeric',
@@ -48,8 +56,8 @@ const description =
       )}
       {note.data.updated && (
         <span class="text-secondary">
-          &nbsp;· Updated{' '}
-          {note.data.updated.toLocaleDateString('en-US', {
+          &nbsp;· {t('post.updated')}{' '}
+          {note.data.updated.toLocaleDateString(lang === 'zh' ? 'zh-CN' : 'en-US', {
             year: 'numeric',
             month: 'long',
             day: 'numeric',
@@ -64,7 +72,7 @@ const description =
     note.body && (
       <details class="toc toc-spaced">
         <summary>
-          <span class="title">Table of Contents</span>
+          <span class="title">{t('post.toc')}</span>
         </summary>
         <div class="inner">
           <nav>

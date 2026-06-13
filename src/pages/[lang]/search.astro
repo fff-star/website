@@ -1,0 +1,123 @@
+---
+import BaseLayout from '../../components/layout/BaseLayout.astro';
+import { useTranslations } from '../../i18n/utils';
+import type { Locale } from '../../content.config';
+
+export function getStaticPaths() {
+  return [
+    { params: { lang: 'en' } },
+    { params: { lang: 'zh' } },
+  ];
+}
+
+const { lang } = Astro.params as { lang: Locale };
+const t = useTranslations(lang);
+---
+
+<BaseLayout lang={lang} title={t('search.title')}>
+  <header class="page-header">
+    <h1>{t('search.title')}</h1>
+  </header>
+
+  <div class="search-container">
+    <input
+      type="text"
+      id="search-input"
+      class="search-input"
+      placeholder={t('search.placeholder')}
+      autofocus
+    />
+    <div id="search-results" class="search-results"></div>
+  </div>
+</BaseLayout>
+
+<link href="/pagefind/pagefind-ui.css" rel="stylesheet">
+<script src="/pagefind/pagefind.js" type="text/javascript"></script>
+<script define:vars={{ lang }}>
+  (async () => {
+    const input = document.getElementById('search-input');
+    const results = document.getElementById('search-results');
+    if (!input || !results) return;
+
+    // Pagefind is already loaded via the classic <script> tag above
+    const pagefind = window.Pagefind;
+    if (!pagefind) {
+      results.innerHTML = '<p class="search-empty">Search unavailable.</p>';
+      return;
+    }
+
+    input.addEventListener('input', async () => {
+      const query = input.value.trim();
+      if (!query) {
+        results.innerHTML = '';
+        return;
+      }
+
+      const search = await pagefind.search(query);
+
+      if (!search || !search.results.length) {
+        results.innerHTML = '<p class="search-empty">No results found.</p>';
+        return;
+      }
+
+      const items = (await Promise.all(search.results.map(async (r) => {
+        const data = await r.data();
+        return `<a class="search-result" href="${data.url}">
+          <span class="search-result-title">${data.meta?.title || data.url}</span>
+          <span class="search-result-excerpt">${data.excerpt?.replace(/<\/?mark>/g, '') || ''}</span>
+        </a>`;
+      })));
+
+      results.innerHTML = items.length ? items.join('') : '<p class="search-empty">No results found.</p>';
+    });
+  })();
+</script>
+
+<style>
+  .search-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--entry);
+    color: var(--primary);
+    outline: none;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+  }
+  .search-input:focus {
+    border-color: var(--accent);
+  }
+  .search-results {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .search-result {
+    display: block;
+    padding: 0.75rem 0;
+    text-decoration: none;
+    border-bottom: 1px solid var(--border);
+  }
+  .search-result-title {
+    display: block;
+    font-weight: 600;
+    color: var(--primary);
+    margin-bottom: 0.25rem;
+  }
+  .search-result:hover .search-result-title {
+    color: var(--accent);
+  }
+  .search-result-excerpt {
+    display: block;
+    font-size: 0.9rem;
+    color: var(--secondary);
+  }
+  .search-empty {
+    color: var(--secondary);
+    text-align: center;
+    padding: 2rem 0;
+  }
+</style>

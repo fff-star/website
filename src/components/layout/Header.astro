@@ -1,34 +1,80 @@
 ---
-import { NAV_ITEMS, SITE } from '../../lib/constants';
+import { getSiteConfig } from '../../i18n/site';
+import { useTranslations, otherLocale } from '../../i18n/utils';
+import type { Locale } from '../../content.config';
 import ThemeToggle from '../ui/ThemeToggle.astro';
 
+export interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const siteConfig = getSiteConfig(lang);
+const t = useTranslations(lang);
+const other = otherLocale(lang);
 const currentPath = Astro.url.pathname;
+const homeUrl = `/${lang}/`;
+
+const navItems = [
+  { label: t('nav.notes'), href: `/${lang}/notes/` },
+  { label: t('nav.blog'), href: `/${lang}/blog/` },
+  { label: t('nav.tags'), href: `/${lang}/tags/` },
+  { label: t('nav.search'), href: `/${lang}/search/` },
+];
 ---
 
 <header class="header">
   <nav class="header-nav">
     <!-- Logo — Fraunces -->
     <div class="logo">
-      <a href="/">{SITE.title}</a>
+      <a href={homeUrl}>{siteConfig.title}</a>
       <div class="logo-switches">
         <ThemeToggle />
       </div>
     </div>
 
-    <!-- Navigation Menu -->
-    <ul id="menu" class="menu">
-      {
-        NAV_ITEMS.map(({ label, href }) => {
-          const active = currentPath.startsWith(href);
-          return (
-            <li>
-              <a href={href} class={active ? 'active' : ''}>
-                {label}
-              </a>
-            </li>
-          );
-        })
-      }
-    </ul>
+    <!-- Navigation Menu + Locale -->
+    <div class="nav-right">
+      <ul id="menu" class="menu">
+        {
+          navItems.map(({ label, href }) => {
+            const active = currentPath.startsWith(href);
+            return (
+              <li>
+                <a href={href} class={active ? 'active' : ''}>
+                  {label}
+                </a>
+              </li>
+            );
+          })
+        }
+      </ul>
+      <a
+        href={`/${other}/`}
+        class="locale-switch"
+        id="locale-switch"
+        data-other-locale={other}
+        aria-label={`Switch to ${other === 'zh' ? '中文' : 'English'}`}
+      >
+        {other === 'zh' ? '中文' : 'EN'}
+      </a>
+    </div>
   </nav>
 </header>
+
+<script>
+  // Locale switcher: HEAD precheck, fallback to home
+  const btn = document.getElementById('locale-switch');
+  btn?.addEventListener('click', async (e) => {
+    e.preventDefault();
+    const otherLocale = btn.dataset.otherLocale!;
+    // Build target URL by replacing current locale prefix
+    const target = window.location.pathname.replace(/^\/(en|zh)\//, `/${otherLocale}/`);
+    try {
+      const res = await fetch(target, { method: 'HEAD' });
+      window.location.href = res.ok ? target : `/${otherLocale}/`;
+    } catch {
+      window.location.href = `/${otherLocale}/`;
+    }
+  });
+</script>

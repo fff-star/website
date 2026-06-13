@@ -1,0 +1,110 @@
+---
+import BaseLayout from '../../../components/layout/BaseLayout.astro';
+import GraphIsland from '../../../components/graph/GraphIsland.astro';
+import { getFolders, buildFolderGraph } from '../../../lib/graph';
+import { useTranslations } from '../../../i18n/utils';
+import type { Locale } from '../../../content.config';
+
+export function getStaticPaths() {
+  return [
+    { params: { lang: 'en' } },
+    { params: { lang: 'zh' } },
+  ];
+}
+
+const { lang } = Astro.params as { lang: Locale };
+const t = useTranslations(lang);
+
+const folders = await getFolders(lang);
+const defaultFolder = folders[0] ?? '';
+
+// Pre-build all folder graphs so the client can switch between them
+// without requiring SSR (static-friendly).
+const allGraphs: Record<string, object> = {};
+for (const folder of folders) {
+  allGraphs[folder] = await buildFolderGraph(folder, lang);
+}
+
+const graphsJson = JSON.stringify(allGraphs);
+---
+
+<BaseLayout lang={lang} title={t('graph.title')}>
+  <header class="page-header">
+    <h1>{t('graph.title')}</h1>
+  </header>
+  <p class="graph-folder-label" style="margin-bottom: var(--gap);" set:html={t('graph.description')}>
+  </p>
+
+  <!-- Folder selector -->
+  {
+    folders.length > 1 && (
+      <nav class="graph-folder-nav" id="graph-folder-nav">
+        {folders.map((f) => (
+          <button
+            type="button"
+            class="graph-folder-chip"
+            data-folder={f}
+            data-active={f === defaultFolder ? 'true' : 'false'}
+          >
+            {f}/
+          </button>
+        ))}
+      </nav>
+    )
+  }
+
+  <!-- Per-folder stats -->
+  <div class="graph-folder-info" id="graph-folder-info">
+    <p class="graph-folder-label">
+      {t('graph.folder_stats', { folder: defaultFolder, nodes: allGraphs[defaultFolder]?.nodes.length ?? 0, links: allGraphs[defaultFolder]?.links.length ?? 0 })}
+    </p>
+  </div>
+
+  <GraphIsland folder={defaultFolder} lang={lang} />
+</BaseLayout>
+
+<script>
+  // Client-side folder switching for static builds.
+  // All graph data is pre-embedded so switching is instant.
+  const allGraphs = JSON.parse(JSON.stringify(allGraphs));
+
+  const folderNav = document.getElementById('graph-folder-nav');
+  const folderInfo = document.getElementById('graph-folder-info');
+  const graphMount = document.getElementById('graph-mount');
+
+  if (folderNav) {
+    folderNav.addEventListener('click', (e) => {
+      const chip = (e.target).closest('[data-folder]');
+      if (!chip) return;
+      e.preventDefault();
+
+      const folder = chip.dataset.folder;
+      const data = allGraphs[folder];
+      if (!data || !graphMount) return;
+
+      // Update active chip
+      folderNav.querySelectorAll('[data-active]').forEach((c) =>
+        c.setAttribute('data-active', 'false')
+      );
+      chip.setAttribute('data-active', 'true');
+
+      // Update URL without navigation
+      const url = new URL(window.location.href);
+      url.searchParams.set('folder', folder);
+      window.history.replaceState({}, '', url.toString());
+
+      // Update graph data
+      graphMount.setAttribute('data-graph', JSON.stringify(data));
+
+      // Update stats
+      if (folderInfo) {
+        folderInfo.innerHTML = `<p class="graph-folder-label">${folder}/ · ${data.nodes.length} notes · ${data.links.length} connections</p>`;
+      }
+
+      // Re-mount graph
+      import('/src/components/graph/graph-loader.js').then(({ mountGraph }) => {
+        if (graphMount) mountGraph(graphMount);
+      });
+    });
+  }
+</script>
