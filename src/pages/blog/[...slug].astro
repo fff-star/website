@@ -1,9 +1,8 @@
 ---
 import BaseLayout from '../../components/layout/BaseLayout.astro';
-import TagList from '../../components/ui/TagList.astro';
-import PostMeta from '../../components/blog/PostMeta.astro';
 import { getCollection, getEntry, render } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
+import GithubSlugger from 'github-slugger';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog');
@@ -32,49 +31,43 @@ const { Content } = await render(post);
   <!-- Post Header -->
   <header class="post-header">
     <h1 class="post-title">{post.data.title}</h1>
-    <div class="post-description">{post.data.description}</div>
-    <div class="post-meta">
-      <PostMeta date={post.data.date} />
-    </div>
-    {
-      post.data.tags.length > 0 && (
-        <div class="post-tags" style="margin-top: 8px; font-size: 16px; color: var(--secondary);">
-          Tags: {post.data.tags.map((tag, i) => (
-            <><a href={`/tags/${tag}/`}>{tag}</a>{i < post.data.tags.length - 1 ? ', ' : ''}</>
-          ))}
-        </div>
-      )
-    }
   </header>
 
   <!-- Table of Contents -->
-  <details class="toc">
-    <summary>
-      <span class="title">Table of Contents</span>
-    </summary>
-    <div class="inner">
-      <nav>
-        <ul>
-          {
-            post.body
-              ?.split('\n')
-              .filter((l) => l.match(/^#{2,3}\s/))
-              .map((l) => {
-                const level = l.match(/^(#{2,3})/)?.[1].length ?? 2;
-                const text = l.replace(/^#{2,3}\s/, '');
-                const id = text.toLowerCase().replace(/[^\w]+/g, '-');
-                return { level, text, id };
-              })
-              .map(({ level, text, id }) => (
-                <li style={`margin-left: ${(level - 2) * 1.5}rem;`}>
-                  <a href={`#${id}`}>{text}</a>
-                </li>
-              ))
-          }
-        </ul>
-      </nav>
-    </div>
-  </details>
+  {
+    post.body && (
+      <details class="toc toc-spaced">
+        <summary>
+          <span class="title">Table of Contents</span>
+        </summary>
+        <div class="inner">
+          <nav>
+            <ul>
+              {
+                (() => {
+                  const slugger = new GithubSlugger();
+                  return post.body
+                    .split('\n')
+                    .filter((l) => l.match(/^#{2,3}\s/))
+                    .map((l) => {
+                      const level = l.match(/^(#{2,3})/)?.[1].length ?? 2;
+                      const text = l.replace(/^#{2,3}\s/, '');
+                      const id = slugger.slug(text);
+                      return { level, text, id };
+                    })
+                    .map(({ level, text, id }) => (
+                      <li style={`--toc-depth: ${(level - 2) * 1.5}rem; margin-left: var(--toc-depth);`}>
+                        <a href={`#${id}`}>{text}</a>
+                      </li>
+                    ));
+                })()
+              }
+            </ul>
+          </nav>
+        </div>
+      </details>
+    )
+  }
 
   <!-- Post Content -->
   <div class="post-content md-content">

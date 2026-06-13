@@ -27,6 +27,10 @@ const pageTitle = title ? `${title} · ${SITE.title}` : SITE.title;
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+    <!-- Preconnect to Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
     <!-- Anti-flash: set theme before CSS loads -->
     <script is:inline>
       (function () {
@@ -47,12 +51,12 @@ const pageTitle = title ? `${title} · ${SITE.title}` : SITE.title;
     <meta
       name="theme-color"
       media="(prefers-color-scheme: light)"
-      content="#f8fafd"
+      content="#fafaf7"
     />
     <meta
       name="theme-color"
       media="(prefers-color-scheme: dark)"
-      content="#0c1222"
+      content="#0a0a0a"
     />
 
     <!-- SEO -->
@@ -82,17 +86,9 @@ const pageTitle = title ? `${title} · ${SITE.title}` : SITE.title;
   </head>
   <body>
     <!-- Skip to content (a11y) -->
-    <a
-      href="#main-content"
-      style="position: absolute; top: -100%; left: 0; padding: 0.5rem 1rem; background: var(--primary); color: var(--theme); z-index: 100; border-radius: 0 0 var(--radius) 0;"
-      >Skip to content</a
-    >
+    <a href="#main-content" class="skip-link">Skip to content</a>
     <Header />
-    <main
-      id="main-content"
-      class="main"
-      style="position: relative; min-height: calc(100vh - var(--header-height) - var(--footer-height)); max-width: calc(var(--main-width) + var(--gap) * 2); margin: auto; padding: var(--gap);"
-    >
+    <main id="main-content" class="main">
       <slot />
     </main>
     <Footer />

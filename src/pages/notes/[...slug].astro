@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../../components/layout/BaseLayout.astro';
-import TagList from '../../components/ui/TagList.astro';
 import { getCollection, render } from 'astro:content';
+import GithubSlugger from 'github-slugger';
 
 export async function getStaticPaths() {
   const notes = await getCollection('notes');
@@ -36,8 +36,7 @@ const description =
   <!-- Post Header -->
   <header class="post-header">
     <h1 class="post-title">{note.data.title}</h1>
-    {description && <div class="post-description">{description}</div>}
-    <div class="post-meta">
+    <div class="post-meta post-meta-top">
       {note.data.date && (
         <span>
           {note.data.date.toLocaleDateString('en-US', {
@@ -58,57 +57,46 @@ const description =
         </span>
       )}
     </div>
-
-    <!-- Tags -->
-    {
-      note.data.tags.length > 0 && (
-        <div class="post-tags" style="margin-top: 8px; font-size: 16px; color: var(--secondary);">
-          Tags: {note.data.tags.map((tag, i) => (
-            <><a href={`/tags/${tag}/`}>{tag}</a>{i < note.data.tags.length - 1 ? ', ' : ''}</>
-          ))}
-        </div>
-      )
-    }
   </header>
 
   <!-- Table of Contents -->
-  <details class="toc">
-    <summary>
-      <span class="title">Table of Contents</span>
-    </summary>
-    <div class="inner">
-      <nav>
-        <ul>
-          {
-            // Extract headings from content for TOC
-            note.body
-              ?.split('\n')
-              .filter((l) => l.match(/^#{1,3}\s/))
-              .map((l) => {
-                const level = l.match(/^(#{1,3})/)?.[1].length ?? 1;
-                const text = l.replace(/^#{1,3}\s/, '');
-                const id = text.toLowerCase().replace(/[^\w]+/g, '-');
-                return { level, text, id };
-              })
-              .map(({ level, text, id }) => (
-                <li style={`margin-left: ${(level - 1) * 1.5}rem;`}>
-                  <a href={`#${id}`}>{text}</a>
-                </li>
-              ))
-          }
-        </ul>
-      </nav>
-    </div>
-  </details>
+  {
+    note.body && (
+      <details class="toc toc-spaced">
+        <summary>
+          <span class="title">Table of Contents</span>
+        </summary>
+        <div class="inner">
+          <nav>
+            <ul>
+              {
+                (() => {
+                  const slugger = new GithubSlugger();
+                  return note.body
+                    .split('\n')
+                    .filter((l) => l.match(/^#{1,3}\s/))
+                    .map((l) => {
+                      const level = l.match(/^(#{1,3})/)?.[1].length ?? 1;
+                      const text = l.replace(/^#{1,3}\s/, '');
+                      const id = slugger.slug(text);
+                      return { level, text, id };
+                    })
+                    .map(({ level, text, id }) => (
+                      <li style={`--toc-depth: ${(level - 1) * 1.5}rem; margin-left: var(--toc-depth);`}>
+                        <a href={`#${id}`}>{text}</a>
+                      </li>
+                    ));
+                })()
+              }
+            </ul>
+          </nav>
+        </div>
+      </details>
+    )
+  }
 
   <!-- Post Content -->
   <div class="post-content md-content">
     <Content />
   </div>
-
-  <!-- Post Navigation (Prev/Next) -->
-  {
-    false
-      /* TODO: Implement prev/next navigation */
-  }
 </BaseLayout>

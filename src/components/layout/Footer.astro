@@ -3,20 +3,21 @@ import { SITE } from '../../lib/constants';
 ---
 
 <footer class="footer">
-  <span>
-    &copy; {new Date().getFullYear()} {SITE.author} · Powered by
-    <a href="https://astro.build" target="_blank" rel="noopener noreferrer">
-      Astro
-    </a>
-    &amp; inspired by
-    <a
-      href="https://github.com/adityatelange/hugo-PaperMod"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      PaperMod
-    </a>
-  </span>
+  <div class="footer-inner">
+    <span>&copy; {new Date().getFullYear()} {SITE.author}</span>
+    <span class="footer-sep">&middot;</span>
+    <span>
+      <a
+        href="https://creativecommons.org/licenses/by-nc-sa/4.0/"
+        target="_blank"
+        rel="noopener noreferrer license"
+      >
+        CC BY-NC-SA 4.0
+      </a>
+    </span>
+    <span class="footer-sep">&middot;</span>
+    <a href="/rss.xml">RSS</a>
+  </div>
 </footer>
 
 <!-- Scroll to top button -->
@@ -28,8 +29,8 @@ import { SITE } from '../../lib/constants';
 >
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
+    width="20"
+    height="20"
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"

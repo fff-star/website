@@ -2,20 +2,17 @@
 import BaseLayout from '../../components/layout/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 
-// Collect tags from both notes and blog
-const notes = await getCollection('notes', ({ data }) => data.publish && !data.draft);
 const posts = await getCollection('blog', ({ data }) => !data.draft);
 
 const tagCounts = new Map<string, number>();
-for (const item of [...notes, ...posts]) {
-  for (const rawTag of item.data.tags) {
+for (const post of posts) {
+  for (const rawTag of post.data.tags) {
     const tag = String(rawTag);
-    // Skip tags that break URL routing
     if (tag.includes('/')) continue;
     tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1);
   }
 }
-const sortedTags = [...tagCounts.entries()].sort((a, b) => b[1] - a[1]);
+const sortedTags = [...tagCounts.entries()].sort((a, b) => a[0].localeCompare(a[0]));
 ---
 
 <BaseLayout title="Tags">
@@ -25,18 +22,12 @@ const sortedTags = [...tagCounts.entries()].sort((a, b) => b[1] - a[1]);
 
   {sortedTags.length === 0 && <p>No tags yet.</p>}
 
-  <div
-    style="display: flex; flex-wrap: wrap; gap: 1em; margin-top: var(--content-gap);"
-  >
+  <div class="tag-list">
     {sortedTags.map(([tag, count]) => (
-      <span style="display: inline-block; font-weight: 500;">
-        <a
-          href={`/tags/${tag}/`}
-          style="display: block; padding: 4px 10px; background: var(--tertiary); color: var(--primary); border-radius: var(--radius); transition: transform 0.1s;"
-        >
-          {tag} ({count})
-        </a>
-      </span>
+      <div class="tag-item">
+        <a href={`/tags/${tag}/`}>{tag}</a>
+        <span class="tag-count">{count} post{count !== 1 ? 's' : ''}</span>
+      </div>
     ))}
   </div>
 </BaseLayout>

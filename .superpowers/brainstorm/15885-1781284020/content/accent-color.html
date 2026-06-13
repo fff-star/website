@@ -1,0 +1,88 @@
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, sans-serif; background: #1a1a2e; color: #e0e0e0; padding: 2rem; }
+  h2 { font-size: 1.8rem; margin-bottom: 0.3rem; }
+  .subtitle { color: #999; margin-bottom: 1.5rem; }
+
+  .accent-option {
+    background: #222240; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.2rem;
+    border: 1px solid #333; cursor: pointer; transition: border-color 0.2s;
+  }
+  .accent-option:hover { border-color: #666; }
+
+  .preview-strip {
+    background: #fff; border-radius: 8px; padding: 1.2rem 1.5rem;
+    margin-top: 0.8rem; display: flex; align-items: center; gap: 1.5rem;
+    font-family: Inter, -apple-system, sans-serif;
+  }
+  .preview-strip .accent-dot {
+    width: 40px; height: 40px; border-radius: 8px; flex-shrink: 0;
+  }
+  .preview-strip .links { display: flex; gap: 1rem; font-size: 14px; }
+  .preview-strip .links a { text-decoration: none; }
+  .preview-strip .links a:hover { text-decoration: underline; }
+  .preview-strip .tag-pill {
+    display: inline-block; padding: 2px 10px; border-radius: 4px;
+    font-size: 11px; font-weight: 600;
+  }
+  .preview-strip .heading { font-family: Georgia, serif; font-size: 18px; color: #111; }
+</style>
+
+<h2>💠 Accent Color</h2>
+<p class="subtitle">The ONE color that breaks the monochrome. Used for links, highlights, focus rings, borders-on-hover.</p>
+
+<div class="accent-option" data-choice="a" onclick="toggleSelect(this)">
+  <h3>A — Classic Blue #2563eb</h3>
+  <div class="preview-strip">
+    <div class="accent-dot" style="background:#2563eb;"></div>
+    <div class="links">
+      <a href="#" style="color:#2563eb;">wiki link →</a>
+      <a href="#" style="color:#2563eb;">backlink →</a>
+    </div>
+    <span class="tag-pill" style="background:#dbeafe;color:#2563eb;">tag</span>
+    <span class="heading">Post Title</span>
+    <div style="width:3px;height:32px;background:#2563eb;border-radius:2px;"></div>
+  </div>
+</div>
+
+<div class="accent-option" data-choice="b" onclick="toggleSelect(this)">
+  <h3>B — Steel Blue #0f6ea0 (current)</h3>
+  <div class="preview-strip">
+    <div class="accent-dot" style="background:#0f6ea0;"></div>
+    <div class="links">
+      <a href="#" style="color:#0f6ea0;">wiki link →</a>
+      <a href="#" style="color:#0f6ea0;">backlink →</a>
+    </div>
+    <span class="tag-pill" style="background:#e0f0f8;color:#0f6ea0;">tag</span>
+    <span class="heading">Post Title</span>
+    <div style="width:3px;height:32px;background:#0f6ea0;border-radius:2px;"></div>
+  </div>
+</div>
+
+<div class="accent-option" data-choice="c" onclick="toggleSelect(this)">
+  <h3>C — Amber #d97706</h3>
+  <div class="preview-strip">
+    <div class="accent-dot" style="background:#d97706;"></div>
+    <div class="links">
+      <a href="#" style="color:#d97706;">wiki link →</a>
+      <a href="#" style="color:#d97706;">backlink →</a>
+    </div>
+    <span class="tag-pill" style="background:#fef3c7;color:#b45309;">tag</span>
+    <span class="heading">Post Title</span>
+    <div style="width:3px;height:32px;background:#d97706;border-radius:2px;"></div>
+  </div>
+</div>
+
+<div class="accent-option" data-choice="d" onclick="toggleSelect(this)">
+  <h3>D — Teal #0d9488</h3>
+  <div class="preview-strip">
+    <div class="accent-dot" style="background:#0d9488;"></div>
+    <div class="links">
+      <a href="#" style="color:#0d9488;">wiki link →</a>
+      <a href="#" style="color:#0d9488;">backlink →</a>
+    </div>
+    <span class="tag-pill" style="background:#ccfbf1;color:#0f766e;">tag</span>
+    <span class="heading">Post Title</span>
+    <div style="width:3px;height:32px;background:#0d9488;border-radius:2px;"></div>
+  </div>
+</div>

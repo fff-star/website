@@ -1,0 +1,121 @@
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, sans-serif; background: #1a1a2e; color: #e0e0e0; padding: 2rem; }
+  h2 { font-size: 1.6rem; margin-bottom: 0.3rem; }
+  .subtitle { color: #999; margin-bottom: 1.5rem; }
+
+  .section-title { font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; color: #888; margin: 2rem 0 0.8rem; }
+
+  /* Simulated real pages */
+  .page-preview {
+    background: #fafaf9; color: #171717; border-radius: 10px; padding: 1.5rem;
+    margin-bottom: 1.2rem; max-width: 680px; font-family: Inter, -apple-system, sans-serif;
+    font-size: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+  .page-preview .site-logo {
+    font-family: 'Fraunces', Georgia, serif; font-size: 20px; font-weight: 500;
+    margin-bottom: 0.8rem; padding-bottom: 0.6rem;
+    border-bottom: 1px solid #e8e8e6;
+  }
+  .page-preview .nav-row {
+    display: flex; gap: 1.2rem; font-size: 13px; color: #6b6b6b; margin-bottom: 1.5rem;
+  }
+  .page-preview .nav-row .active { color: #171717; font-weight: 600; }
+
+  /* Hero */
+  .hero { margin-bottom: 2rem; }
+  .hero h1 { font-family: 'Fraunces', Georgia, serif; font-size: 30px; font-weight: 500; margin-bottom: 0.5rem; letter-spacing: -0.01em; }
+  .hero p { font-size: 15px; color: #6b6b6b; line-height: 1.6; max-width: 520px; }
+
+  /* Blog post card - no border */
+  .blog-card {
+    padding: 1rem 0; border-bottom: 1px solid #e8e8e6;
+    display: flex; justify-content: space-between; align-items: baseline;
+  }
+  .blog-card:last-child { border-bottom: none; }
+  .blog-card .date { font-size: 12px; color: #6b6b6b; min-width: 100px; }
+  .blog-card h4 { font-family: 'Fraunces', Georgia, serif; font-size: 18px; font-weight: 500; }
+  .blog-card h4 a { color: #171717; text-decoration: none; }
+  .blog-card .desc { font-size: 13px; color: #6b6b6b; margin-top: 2px; }
+
+  /* Notes - secondary, compact */
+  .notes-section { margin-top: 2.5rem; padding-top: 1.2rem; border-top: 1px solid #e8e8e6; }
+  .notes-section .section-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: #999; margin-bottom: 0.6rem; }
+  .notes-grid { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+  .notes-grid a { font-size: 13px; color: #6b6b6b; text-decoration: none; padding: 4px 0; }
+  .notes-grid a:hover { color: #0f6ea0; }
+</style>
+
+<h2>🏠 Homepage (blog-first)</h2>
+<p class="subtitle">Blog as primary, notes as secondary section below</p>
+
+<div class="page-preview">
+  <div class="site-logo">fff-star</div>
+  <div class="nav-row">
+    <span class="active">Blog</span><span>Notes</span><span>Tags</span><span>Search</span>
+  </div>
+
+  <div class="hero">
+    <h1>Hi, I'm fff-star</h1>
+    <p>A sophomore undergrad interested in <strong>Cryptography</strong>, <strong>Coding Theory</strong> and <strong>Mathematics</strong>.</p>
+  </div>
+
+  <div class="blog-card">
+    <span class="date">Jun 13, 2025</span>
+    <div style="flex:1;margin-left:1.5rem;">
+      <h4><a href="#">Getting Started</a></h4>
+      <div class="desc">Welcome to my blog — thoughts on crypto, coding theory, and whatever I'm learning.</div>
+    </div>
+  </div>
+  <div class="blog-card">
+    <span class="date">May 28, 2025</span>
+    <div style="flex:1;margin-left:1.5rem;">
+      <h4><a href="#">Understanding Zero-Knowledge Proofs</a></h4>
+      <div class="desc">How to prove you know something without revealing what you know.</div>
+    </div>
+  </div>
+  <div class="blog-card">
+    <span class="date">May 15, 2025</span>
+    <div style="flex:1;margin-left:1.5rem;">
+      <h4><a href="#">Reed-Solomon Codes: A Visual Introduction</a></h4>
+      <div class="desc">Building error-correcting codes from polynomial interpolation.</div>
+    </div>
+  </div>
+
+  <div class="notes-section">
+    <div class="section-label">Notes · network wiki</div>
+    <div class="notes-grid">
+      <a href="#">TCP</a> <span style="color:#ddd;font-size:11px;">·</span>
+      <a href="#">HTTP</a> <span style="color:#ddd;font-size:11px;">·</span>
+      <a href="#">DNS</a> <span style="color:#ddd;font-size:11px;">·</span>
+      <a href="#">BGP</a> <span style="color:#ddd;font-size:11px;">·</span>
+      <a href="#">TLS</a> <span style="color:#ddd;font-size:11px;">·</span>
+      <a href="#">IPsec</a> <span style="color:#ddd;font-size:11px;">·</span>
+      <a href="#">WiFi</a> <span style="color:#ddd;font-size:11px;">·</span>
+      <a href="#">+82 more</a>
+    </div>
+  </div>
+</div>
+
+<div class="section-title">Blog Post Detail</div>
+
+<div class="page-preview">
+  <div class="site-logo">fff-star</div>
+  <div style="font-size:12px;color:#6b6b6b;margin-bottom:1.2rem;">
+    <a href="#" style="color:#6b6b6b;">Blog</a> / <span>Understanding Zero-Knowledge Proofs</span>
+  </div>
+
+  <h1 style="font-family:'Fraunces',Georgia,serif;font-size:30px;font-weight:500;margin-bottom:0.5rem;">Understanding Zero-Knowledge Proofs</h1>
+  <p style="font-size:14px;color:#6b6b6b;margin-bottom:1.2rem;">How to prove you know something without revealing what you know.</p>
+  <div style="font-size:12px;color:#999;margin-bottom:1.5rem;">May 28, 2025</div>
+
+  <p style="font-size:15px;line-height:1.7;color:#444;margin-bottom:0.8rem;">
+    A zero-knowledge proof is a method by which one party can prove to another that a statement is
+    true without revealing any information beyond the validity of the statement itself.
+  </p>
+  <p style="font-size:15px;line-height:1.7;color:#444;">
+    The concept was introduced by Goldwasser, Micali, and Rackoff in 1985. It has since become
+    a foundational primitive in modern cryptography, enabling applications from authentication
+    to blockchain privacy...
+  </p>
+</div>

@@ -1,0 +1,104 @@
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, sans-serif; background: #1a1a2e; color: #e0e0e0; padding: 2rem; }
+  h2 { font-size: 1.8rem; margin-bottom: 0.3rem; }
+  .subtitle { color: #999; margin-bottom: 1.5rem; }
+
+  .option-box {
+    background: #222240; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem;
+    border: 1px solid #333; cursor: pointer; transition: border-color 0.2s;
+  }
+  .option-box:hover { border-color: #666; }
+
+  /* Simulated site previews */
+  .site-preview {
+    background: #fff; color: #111; border-radius: 8px; padding: 1.5rem;
+    margin-top: 1rem; max-width: 600px;
+  }
+  .site-preview .site-title {
+    font-size: 24px; margin-bottom: 4px;
+  }
+  .site-preview .site-nav {
+    font-size: 14px; color: #666; margin-bottom: 1rem;
+    display: flex; gap: 1.2rem;
+  }
+  .site-preview .post-card {
+    border: 1px solid #e5e5e5; border-radius: 6px; padding: 1rem;
+    margin-bottom: 0.8rem;
+  }
+  .site-preview .post-card h4 { font-size: 18px; margin-bottom: 4px; }
+  .site-preview .post-card p { font-size: 14px; color: #555; line-height: 1.5; }
+  .site-preview .post-card .meta { font-size: 12px; color: #999; margin-top: 0.5rem; }
+  .site-preview .accent { color: #2563eb; }
+
+  .label-row { display: flex; gap: 2rem; font-size: 12px; color: #888; margin-top: 0.5rem; }
+</style>
+
+<h2>🔤 Typography Direction</h2>
+<p class="subtitle">High-contrast minimal palette. Which type system?</p>
+
+<!-- A: Keep current -->
+<div class="option-box" data-choice="a" onclick="toggleSelect(this)">
+  <h3 style="margin-bottom:0.3rem;">A — Keep Fraunces + Atkinson, Refine Scale</h3>
+  <p style="color:#aaa;font-size:0.9rem;margin-bottom:1rem;">
+    Same fonts. Tighten the size scale, reduce Atkinson to 16px, make Fraunces less italic.
+  </p>
+
+  <div class="site-preview">
+    <div class="site-title" style="font-family:'Fraunces',Georgia,serif;font-weight:450;font-style:italic;">fff-star</div>
+    <div class="site-nav" style="font-family:'Atkinson Hyperlegible',sans-serif;">Notes / Blog / Tags / Search</div>
+    <div class="post-card">
+      <h4 style="font-family:'Fraunces',Georgia,serif;font-weight:500;">TCP Congestion Control</h4>
+      <p style="font-family:'Atkinson Hyperlegible',sans-serif;">How TCP detects and responds to network congestion using AIMD and slow start algorithms.</p>
+      <div class="meta" style="font-family:'Atkinson Hyperlegible',sans-serif;">2026-06-13 · network</div>
+    </div>
+    <div class="label-row">
+      <span>Heading: Fraunces 500</span>
+      <span>Body: Atkinson Hyperlegible 16px</span>
+    </div>
+  </div>
+</div>
+
+<!-- B: All geometric sans -->
+<div class="option-box" data-choice="b" onclick="toggleSelect(this)">
+  <h3 style="margin-bottom:0.3rem;">B — Pure Geometric Sans (Inter/Geist)</h3>
+  <p style="color:#aaa;font-size:0.9rem;margin-bottom:1rem;">
+    Ditch both. Use Inter or Geist throughout. Clean, modern, no serif personality. Maximum minimalism.
+  </p>
+
+  <div class="site-preview">
+    <div class="site-title" style="font-family:Inter,-apple-system,sans-serif;font-weight:700;letter-spacing:-0.02em;">fff-star</div>
+    <div class="site-nav" style="font-family:Inter,-apple-system,sans-serif;">Notes / Blog / Tags / Search</div>
+    <div class="post-card">
+      <h4 style="font-family:Inter,-apple-system,sans-serif;font-weight:600;letter-spacing:-0.01em;">TCP Congestion Control</h4>
+      <p style="font-family:Inter,-apple-system,sans-serif;">How TCP detects and responds to network congestion using AIMD and slow start algorithms.</p>
+      <div class="meta" style="font-family:Inter,-apple-system,sans-serif;">2026-06-13 · network</div>
+    </div>
+    <div class="label-row">
+      <span>Heading: Inter 600</span>
+      <span>Body: Inter 15px</span>
+    </div>
+  </div>
+</div>
+
+<!-- C: Hybrid -->
+<div class="option-box" data-choice="c" onclick="toggleSelect(this)">
+  <h3 style="margin-bottom:0.3rem;">C — Fraunces Headings + Geometric Sans Body</h3>
+  <p style="color:#aaa;font-size:0.9rem;margin-bottom:1rem;">
+    Keep Fraunces for h1-h4 (character, distinction). Inter/Geist for body text (clean reading). Best of both.
+  </p>
+
+  <div class="site-preview">
+    <div class="site-title" style="font-family:'Fraunces',Georgia,serif;font-weight:500;">fff-star</div>
+    <div class="site-nav" style="font-family:Inter,-apple-system,sans-serif;">Notes / Blog / Tags / Search</div>
+    <div class="post-card">
+      <h4 style="font-family:'Fraunces',Georgia,serif;font-weight:500;">TCP Congestion Control</h4>
+      <p style="font-family:Inter,-apple-system,sans-serif;">How TCP detects and responds to network congestion using AIMD and slow start algorithms.</p>
+      <div class="meta" style="font-family:Inter,-apple-system,sans-serif;">2026-06-13 · network</div>
+    </div>
+    <div class="label-row">
+      <span>Heading: Fraunces 500</span>
+      <span>Body: Inter 15px</span>
+    </div>
+  </div>
+</div>

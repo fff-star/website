@@ -1,0 +1,8 @@
+{"type":"server-started","port":56670,"host":"127.0.0.1","url_host":"localhost","url":"http://localhost:56670","screen_dir":"/home/fff/website/.superpowers/brainstorm/15885-1781284020/content","state_dir":"/home/fff/website/.superpowers/brainstorm/15885-1781284020/state"}
+{"type":"screen-added","file":"/home/fff/website/.superpowers/brainstorm/15885-1781284020/content/design-audit.html"}
+{"type":"screen-added","file":"/home/fff/website/.superpowers/brainstorm/15885-1781284020/content/visual-direction.html"}
+{"type":"screen-added","file":"/home/fff/website/.superpowers/brainstorm/15885-1781284020/content/visual-direction-v2.html"}
+{"type":"screen-added","file":"/home/fff/website/.superpowers/brainstorm/15885-1781284020/content/typography.html"}
+{"type":"screen-added","file":"/home/fff/website/.superpowers/brainstorm/15885-1781284020/content/accent-color.html"}
+{"type":"screen-added","file":"/home/fff/website/.superpowers/brainstorm/15885-1781284020/content/blog-first-refinement.html"}
+{"type":"server-stopped","reason":"idle timeout"}

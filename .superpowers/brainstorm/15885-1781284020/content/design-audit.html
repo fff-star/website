@@ -1,0 +1,102 @@
+<h2>🔍 Current Design Audit — fff.sh</h2>
+<p class="subtitle">"Arctic Frost" theme — 12 issues found across the site</p>
+
+<div class="section">
+  <h3>Critical Issues</h3>
+</div>
+
+<div class="cards">
+  <div class="card" data-choice="issue1" onclick="toggleSelect(this)" style="border-left: 4px solid #e74c3c;">
+    <div class="card-body">
+      <h3>❌ Homepage Blog List is Raw Text</h3>
+      <p>No card styling on index.astro — just inline date + link. Completely unstyled compared to PostEntry cards.</p>
+    </div>
+  </div>
+  <div class="card" data-choice="issue2" onclick="toggleSelect(this)" style="border-left: 4px solid #e74c3c;">
+    <div class="card-body">
+      <h3>❌ Notes Folder Page Shows No Notes</h3>
+      <p>/notes/[folder].astro only renders index.md content — the actual notes in each folder are never listed!</p>
+    </div>
+  </div>
+  <div class="card" data-choice="issue3" onclick="toggleSelect(this)" style="border-left: 4px solid #e74c3c;">
+    <div class="card-body">
+      <h3>❌ Heavy Inline Styles Everywhere</h3>
+      <p>Header, index, notes pages, tags pages all use raw style="" attributes instead of CSS classes. Inconsistent and unmaintainable.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Visual Quality Issues</h3>
+</div>
+
+<div class="cards">
+  <div class="card" data-choice="issue4" onclick="toggleSelect(this)" style="border-left: 4px solid #f39c12;">
+    <div class="card-body">
+      <h3>🟡 No .page-header h1 Style</h3>
+      <p>Multiple pages use &lt;header class="page-header"&gt;&lt;h1&gt; but there's no CSS rule for it. Only referenced in @media query.</p>
+    </div>
+  </div>
+  <div class="card" data-choice="issue5" onclick="toggleSelect(this)" style="border-left: 4px solid #f39c12;">
+    <div class="card-body">
+      <h3>🟡 Typography Hierarchy Gap</h3>
+      <p>h1=38px but h2=24px — a 14px gap. Post titles are 42px but page titles have no consistent sizing.</p>
+    </div>
+  </div>
+  <div class="card" data-choice="issue6" onclick="toggleSelect(this)" style="border-left: 4px solid #f39c12;">
+    <div class="card-body">
+      <h3>🟡 Tags & Notes Pages are Bare Lists</h3>
+      <p>/tags/, /tags/[tag]/, /notes/ — all just text links with no visual cards, no hierarchy, no design treatment.</p>
+    </div>
+  </div>
+  <div class="card" data-choice="issue7" onclick="toggleSelect(this)" style="border-left: 4px solid #f39c12;">
+    <div class="card-body">
+      <h3>🟡 Dark Mode Code Blocks Lack Contrast</h3>
+      <p>Code block bg (#111827) vs entry bg (#151d2e) — nearly identical. Code blocks don't stand out in dark mode.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Polish & Detail Issues</h3>
+</div>
+
+<div class="cards">
+  <div class="card" data-choice="issue8" onclick="toggleSelect(this)" style="border-left: 4px solid #3498db;">
+    <div class="card-body">
+      <h3>🔵 Cold Palette Feels Clinical</h3>
+      <p>"Arctic Frost" is all icy whites and slate blues. No warmth, no personality beyond the accent blue.</p>
+    </div>
+  </div>
+  <div class="card" data-choice="issue9" onclick="toggleSelect(this)" style="border-left: 4px solid #3498db;">
+    <div class="card-body">
+      <h3>🔵 No Visual Flair</h3>
+      <p>No gradients, no decorative elements, no texture. The section-divider gradient exists but may not be used anywhere.</p>
+    </div>
+  </div>
+  <div class="card" data-choice="issue10" onclick="toggleSelect(this)" style="border-left: 4px solid #3498db;">
+    <div class="card-body">
+      <h3>🔵 Blog Archive Doesn't Use PostEntry</h3>
+      <p>/blog/ uses raw archive styling instead of the PostEntry.astro card component. Inconsistent with note listings.</p>
+    </div>
+  </div>
+  <div class="card" data-choice="issue11" onclick="toggleSelect(this)" style="border-left: 4px solid #3498db;">
+    <div class="card-body">
+      <h3>🔵 Atkinson Hyperlegible at 18px is Chunky</h3>
+      <p>Body font is large for a reading site. The font prioritizes accessibility legibility over aesthetic refinement.</p>
+    </div>
+  </div>
+  <div class="card" data-choice="issue12" onclick="toggleSelect(this)" style="border-left: 4px solid #3498db;">
+    <div class="card-body">
+      <h3>🔵 No Backlinks or Footer Nav on Note Pages</h3>
+      <p>Note pages have Backlinks component imported but the TODO for prev/next nav is marked false. Missing navigation dead-ends.</p>
+    </div>
+  </div>
+</div>
+
+<hr style="margin: 2rem 0; border-color: var(--border);">
+
+<div class="section">
+  <h3>Before we dive into fixes, I have a few questions:</h3>
+  <p class="subtitle">Click to select any issues you care about most, or just tell me in the terminal.</p>
+</div>

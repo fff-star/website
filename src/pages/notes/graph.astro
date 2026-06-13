@@ -13,7 +13,7 @@ const graphData = await buildFolderGraph(defaultFolder);
   <header class="page-header">
     <h1>Knowledge Graph</h1>
   </header>
-  <p style="color: var(--secondary); margin-bottom: var(--gap);">
+  <p class="graph-folder-label" style="margin-bottom: var(--gap);">
     Each folder is a self-contained knowledge domain.
     Nodes = notes, lines = wiki-links within the folder.
     <strong>Drag</strong> to rearrange, <strong>scroll</strong> to zoom,
@@ -23,11 +23,12 @@ const graphData = await buildFolderGraph(defaultFolder);
   <!-- Folder selector -->
   {
     folders.length > 1 && (
-      <nav style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: var(--content-gap);">
+      <nav class="graph-folder-nav">
         {folders.map((f) => (
           <a
             href={`/notes/graph/?folder=${f}`}
-            style={`padding: 4px 14px; border-radius: 20px; font-size: 14px; border: 1px solid var(--border); transition: all 0.15s ease; ${f === defaultFolder ? 'background: var(--accent); color: #fff; border-color: var(--accent);' : 'color: var(--secondary); background: var(--entry);'}`}
+            class="graph-folder-chip"
+            data-active={f === defaultFolder ? 'true' : 'false'}
           >
             {f}/
           </a>
@@ -37,8 +38,8 @@ const graphData = await buildFolderGraph(defaultFolder);
   }
 
   <!-- Per-folder stats -->
-  <div style="margin-bottom: var(--gap);">
-    <p style="font-size: 14px; color: var(--secondary); margin-bottom: 4px;">
+  <div class="graph-folder-info">
+    <p class="graph-folder-label">
       Folder: <strong>{defaultFolder}/</strong>
       · {graphData.nodes.length} notes · {graphData.links.length} connections
     </p>

@@ -4,7 +4,6 @@ import { getCollection, render } from 'astro:content';
 
 export async function getStaticPaths() {
   const notes = await getCollection('notes');
-  // Detect folders: notes whose ids contain a slash
   const folderSet = new Set<string>();
   for (const note of notes) {
     const id = note.id.replace(/\.md$/, '');
@@ -16,8 +15,6 @@ export async function getStaticPaths() {
 
 const { folder } = Astro.params;
 
-// Find the folder's index.md
-// Glob loader converts "folder/index.md" → id = "folder"
 const allNotes = await getCollection('notes', ({ data }) => data.publish && !data.draft);
 const indexNote = allNotes.find((n) => n.id.replace(/\.md$/, '') === folder);
 const indexContent = indexNote ? await render(indexNote) : null;
@@ -34,17 +31,13 @@ const indexContent = indexNote ? await render(indexNote) : null;
     <h1>{folder}/</h1>
   </header>
 
-  <!-- Folder index content -->
   {
     indexContent ? (
       <div class="post-content md-content">
         <indexContent.Content />
       </div>
     ) : (
-      <p style="color: var(--secondary); margin-bottom: var(--gap);">
-        No index.md in this folder.
-      </p>
+      <p style="color: var(--secondary);">No index.md in this folder.</p>
     )
   }
-
 </BaseLayout>

@@ -10,16 +10,12 @@ import rehypeSlug from 'rehype-slug';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://fff.sh',
+  site: 'https://fff-star.pages.dev',
   integrations: [react()],
   markdown: {
     syntaxHighlight: 'shiki',
     shikiConfig: {
-      // Always use dark themes — PaperMod always renders code blocks on dark bg
-      themes: {
-        light: 'github-dark',
-        dark: 'github-dark',
-      },
+      themes: { light: 'github-dark', dark: 'github-dark' },
     },
     remarkPlugins: [
       remarkWikiLink,
@@ -33,10 +29,7 @@ export default defineConfig({
   },
   vite: {
     plugins: [tailwindcss()],
-    ssr: {
-      noExternal: [], // Let Astro handle all SSR
-    },
-    // Prevent SSR from trying to evaluate browser-only packages
+    ssr: { noExternal: [] },
     resolve: {
       alias: {
         'react-force-graph-2d': 'react-force-graph-2d',

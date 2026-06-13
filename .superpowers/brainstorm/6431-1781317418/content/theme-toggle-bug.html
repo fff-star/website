@@ -1,0 +1,60 @@
+<h2>🔴 Critical Bug: Theme Toggle Icons Are Invisible</h2>
+<p class="subtitle">Astro’s CSS scoping silently breaks the <code>[data-theme]</code> selectors — the toggle button renders with no icon at all</p>
+
+<div class="section">
+  <h3>What's Happening</h3>
+  <p>The ThemeToggle component uses <code>&lt;style&gt;</code> (scoped by Astro) to show/hide sun/moon icons based on <code>data-theme</code> on <code>&lt;html&gt;</code>. But Astro prepends its scoping attribute to EVERY compound selector part:</p>
+</div>
+
+<div class="mockup">
+  <div class="mockup-header">ThemeToggle.astro — what the developer wrote</div>
+  <div class="mockup-body">
+    <pre style="font-size: 13px; line-height: 1.7; background: #1a1a1a; color: #e0e0e0; padding: 1rem; border-radius: 6px; overflow-x: auto;">
+<span style="color: #888;">/* Intended CSS */</span>
+<span style="color: #7dcfff;">[data-theme='dark']</span> .sun { <span style="color: #7dcfff;">display</span>: none <span style="color: #f78c6c;">!important</span>; }
+<span style="color: #7dcfff;">[data-theme='dark']</span> .moon { <span style="color: #7dcfff;">display</span>: inline-flex <span style="color: #f78c6c;">!important</span>; }</pre>
+  </div>
+</div>
+
+<div style="margin: 1rem 0; text-align: center; font-size: 2rem; color: var(--accent);">⬇</div>
+
+<div class="mockup">
+  <div class="mockup-header">Compiled CSS output — what Astro actually produces</div>
+  <div class="mockup-body">
+    <pre style="font-size: 13px; line-height: 1.7; background: #1a1a1a; color: #e0e0e0; padding: 1rem; border-radius: 6px; overflow-x: auto;">
+<span style="color: #888;">/* Astro scoped the data-theme selector — it can NEVER match */</span>
+<span style="color: #f78c6c;">[data-astro-cid-lfoluaxz]</span><span style="color: #7dcfff;">[data-theme=dark]</span> .sun<span style="color: #f78c6c;">[data-astro-cid-lfoluaxz]</span> { ... }</pre>
+  </div>
+</div>
+
+<div class="section">
+  <p><strong>Why it fails:</strong> <code>data-theme</code> is set on <code>&lt;html&gt;</code>, but the scoping attribute <code>data-astro-cid-*</code> is on the ThemeToggle button. No element has <em>both</em> attributes, so the selector matches nothing. Both icons stay <code>display:none</code> (their inline default).</p>
+</div>
+
+<div class="split">
+  <div class="mockup">
+    <div class="mockup-header">❌ Current — Broken</div>
+    <div class="mockup-body" style="text-align: center; padding: 2rem;">
+      <div style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: #fafaf9; border: 1px solid #e5e5e5; border-radius: 6px; justify-content: center;">
+        <span style="font-family: 'Fraunces', serif; font-size: 18px; font-weight: 500;">fff-star</span>
+        <span style="width: 20px; height: 20px; background: #ddd; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; color: #999;" title="Invisible toggle — no icon renders!">?</span>
+      </div>
+      <p style="margin-top: 0.5rem; font-size: 13px; color: #c00;">Toggle button is blank — no icon visible</p>
+    </div>
+  </div>
+  <div class="mockup">
+    <div class="mockup-header">✅ Fixed — Working</div>
+    <div class="mockup-body" style="text-align: center; padding: 2rem;">
+      <div style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: #fafaf9; border: 1px solid #e5e5e5; border-radius: 6px; justify-content: center;">
+        <span style="font-family: 'Fraunces', serif; font-size: 18px; font-weight: 500;">fff-star</span>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+      </div>
+      <p style="margin-top: 0.5rem; font-size: 13px; color: #2a7d2a;">Moon icon renders, toggle works on click</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>The Fix</h3>
+  <p>Change the <code>&lt;style&gt;</code> block in <code>ThemeToggle.astro</code> to <code>&lt;style is:global&gt;</code>, or move the data-theme rules to <code>global.css</code>. Since these rules target <code>&lt;html&gt;</code> state — inherently global — they must not be scoped.</p>
+</div>

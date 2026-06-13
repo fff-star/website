@@ -1,35 +1,16 @@
 # High-Contrast Minimal Redesign
 
-**Date:** 2026-06-13
-**Scope:** Full-site visual redesign + CSS architecture cleanup
+**Date:** 2026-06-13 (updated 2026-06-13)
+**Scope:** Full-site visual redesign + CSS architecture cleanup + bug fixes
 
 ## Summary
 
-Redesign fff.sh from "Arctic Frost" (cold slate-blue palette, Fraunces italic + Atkinson Hyperlegible, decorative elements) to a high-contrast minimal aesthetic: pure grayscale palette, Fraunces upright headings + Inter body, no borders, geometric spacing, steel blue accent retained.
+Redesign fff.sh to a high-contrast minimal aesthetic: pure grayscale palette, Fraunces upright headings + Inter body, no decorative borders on cards, geometric spacing, steel blue accent. Fixes critical CSS scoping bug that made theme toggle icons invisible.
 
-## Design Decisions
+## Bugs Fixed
 
-| Dimension | Before | After |
-|---|---|---|
-| Palette | Icy whites + slate blues | Pure grayscale (`#fafafa`/`#fff`/`#111`/`#e5e5e5`) |
-| Accent | `#0f6ea0` | `#0f6ea0` (unchanged) |
-| Heading font | Fraunces italic, variable weight | Fraunces upright, tighter weight scale |
-| Body font | Atkinson Hyperlegible 18px | Inter 15-16px |
-| Cards | Left thick border + full border | No border, background-only differentiation |
-| Decoration | Drop cap, gradient dividers, hero italic | All removed |
-| Dark mode | Blue-gray darks | Pure black-gray darks (`#0a0a0a`/`#1a1a1a`) |
-| Code font | JetBrains Mono | JetBrains Mono (unchanged) |
-| Inline styles | Heavy use of `style=""` across components | Migrate to CSS classes |
-
-## What Stays the Same
-
-- Card structure (post-entry, archive-entry)
-- Notes folder page behavior (shows index.md, lists folder names only)
-- Layout widths (`--main-width: 720px`, `--nav-width: 1024px`)
-- Header/footer structure
-- Knowledge graph, backlinks, TOC, search (Pagefind)
-- Wiki-link styling pattern (dotted underline)
-- Tag display patterns
+1. **Theme toggle icons invisible** — Astro CSS scoping rewrote `[data-theme='dark'] .sun` as `[data-astro-cid][data-theme=dark] .sun[data-astro-cid]`, which could never match because `data-theme` is on `<html>`, not the scoped component. Fixed by using `<style is:global>` in ThemeToggle.astro.
+2. **Wiki-link 404s** — Folder renamed from `network wiki` (space) to `network-wiki` (hyphen) to match Astro's content collection slug normalization. Wiki links now resolve to URLs that match generated page paths.
 
 ## Color System
 
@@ -44,9 +25,9 @@ Redesign fff.sh from "Arctic Frost" (cold slate-blue palette, Fraunces italic + 
 --accent:     #0f6ea0   (links, highlights)
 --accent-hover: #0a5580
 --accent-dim: #e8f2f8   (accent background, mark bg)
---code-block-bg: #f0f0f0
+--code-block-bg: #1e1e1e   (dark — shiki uses dark themes for both modes)
 --code-bg:    #f5f5f5
---border:     #e5e5e5   (only for tables, code blocks, TOC — NOT cards)
+--border:     #e5e5e5
 ```
 
 ### Dark Theme
@@ -67,64 +48,75 @@ Redesign fff.sh from "Arctic Frost" (cold slate-blue palette, Fraunces italic + 
 
 ## Typography Scale
 
-### Headings (Fraunces, upright, no italic)
+Chosen to balance readability (technical Chinese content with formulas/tables/code) with personality. The 720px content column and dense Chinese characters informed sizing decisions.
+
+### Headings (Fraunces, upright, weight 500)
 ```
-h1: 32px, weight 500 (was 38px, 380 italic)
-h2: 22px, weight 500 (was 24px, 470)
-h3: 18px, weight 550 (was 20px, 450)
-h4: 16px, weight 600 (was 18px, 500)
-.post-title: 32px, weight 500 (was 42px, 400 italic)
+h1: 36px   (page titles — substantial without dominating)
+h2: 26px   (section headings — clear hierarchy jump)
+h3: 20px   (sub-sections, weight 550)
+h4: 18px   (minor headings, weight 600)
+.post-title: 36px
+.page-header h1: 36px
+.post-content h1: 30px (slightly smaller than page title)
+.post-content h2: 26px
+.post-content h3: 20px
+.post-content h4: 18px
 ```
 
-### Body (Inter)
+### Body (Inter, weight 450)
 ```
-body: 16px, line-height 1.6 (was 18px, 1.65)
-.entry-content: 14px (was 15px)
-.post-content: 16px, line-height 1.7 (was 18px, 1.75)
-.entry-footer: 12px (was 13px)
+body: 18px, line-height 1.6
+.post-content: 18px, line-height 1.7
+.entry-content (card previews): 15px
+.entry-footer: 14px
+.post-meta, .breadcrumbs: 15px
+.footer: 14px
 ```
 
-## What Gets Removed
+### Card / List Titles (Fraunces)
+```
+.entry-header h2: 24px
+.blog-item-title: 22px
+.archive-entry-title a: 22px
+.folder-item a: 22px
+.tag-item a: 22px
+```
 
-1. Drop cap on `.post-content > p:first-of-type::first-letter`
-2. `.section-divider` gradient rule
-3. `.first-entry .entry-header h1` italic style
-4. `.post-entry` left border (`border-left: 4px solid`)
-5. `.post-entry` border (`border: 1px solid var(--border)`)
-6. Hero italic Fraunces
-7. All decorative gradient elements
+## Layout (unchanged)
+```
+--gap: 24px
+--content-gap: 16px
+--nav-width: 1024px
+--main-width: 720px
+--header-height: 60px
+--footer-height: 56px
+--radius: 6px
+```
 
-## What Gets Added
+## What Was Removed
+- Drop cap on `.post-content > p:first-of-type::first-letter`
+- All decorative gradient elements
+- Left-border card indicators
+- Atkinson Hyperlegible font (replaced with Inter)
 
-1. **Font import**: Inter from Google Fonts (replace Atkinson Hyperlegible)
-2. **`.page-header h1`** CSS rule (was missing, defined only in @media)
+## What Was Added
+- `.page-header h1` CSS rule
+- `.graph-folder-chip` CSS for graph page folder selector
+- `.skip-link` CSS class for accessibility
+- `.empty-message` utility class for empty states
+- `.graph-folder-nav`, `.graph-folder-info`, `.graph-folder-label` for graph page
 
 ## Inline Style Migration
-
-Move inline `style=""` attributes to CSS classes in `global.css`:
-- **Header.astro**: nav, logo, menu, active link styles → `.header`, `.header-nav`, `.logo`, `.menu`, `.menu-active`
-- **index.astro**: blog post list styles → `.home-post-list`, `.home-post-item`
-- **notes/index.astro**: folder listing → `.folder-list`, `.folder-item`
-- **tags/index.astro**: tag listing → `.tag-list`, `.tag-item`
-- **tags/[tag].astro**: post listing → `.tag-post-list`
-- **NoteCard.astro**: already uses CSS classes
-- **TagList.astro**: already uses CSS classes
-- **ThemeToggle.astro**: keep inline styles (dynamic display toggle requires it)
-
-## Implementation Order
-
-1. `global.css` — color system, typography, remove decoration, add missing styles
-2. `BaseLayout.astro` — update font import link
-3. `Header.astro` — migrate inline styles to classes
-4. `index.astro` (homepage) — migrate inline styles
-5. `notes/index.astro` — migrate inline styles
-6. `tags/index.astro`, `tags/[tag].astro` — migrate inline styles
-7. Verify all pages render correctly
+Moved ~18 inline `style=""` attributes to CSS classes in `global.css`:
+- BaseLayout: skip-link, main content area
+- Graph page: folder nav, chips, stats, fallback
+- Notes/Blog pages: TOC spacing, post-meta
+- Components: NoteCard tags, PostEntry cover, Backlinks desc, TagList empty state
 
 ## Non-Goals
-
 - Changing layout widths or page structure
-- Adding new features (prev/next nav, new components)
+- Adding new features
 - Changing content rendering (wiki-links, code blocks, callouts, KaTeX)
 - Modifying the graph visualization
 - Search page redesign (Pagefind handles its own UI)
