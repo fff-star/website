@@ -1,5 +1,4 @@
-/* --- Google Fonts --- */
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,9..144,400..650;1,9..144,400..650&family=Inter:ital,wght@0,400..650;1,400..650&display=swap');
+/* --- Fonts loaded via <link> in BaseLayout --- */
 
 @import 'katex/dist/katex.min.css';
 
@@ -123,6 +122,16 @@ button, input, textarea {
   padding: 0;
   border: 0;
   background: transparent;
+}
+
+select {
+  background-color: var(--entry);
+  color: var(--primary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.25em 0.5em;
+  font-family: inherit;
+  font-size: inherit;
 }
 
 /* ============================================

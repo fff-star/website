@@ -84,12 +84,12 @@ const t = useTranslations(lang);
     border-radius: var(--radius);
     background: var(--entry);
     color: var(--primary);
-    outline: none;
-    transition: border-color 0.2s;
+    transition: border-color 0.2s, box-shadow 0.2s;
     box-sizing: border-box;
   }
   .search-input:focus {
     border-color: var(--accent);
+    box-shadow: 0 0 0 2px var(--accent-dim);
   }
   .search-results {
     margin-top: 1.5rem;
