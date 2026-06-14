@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../../components/layout/BaseLayout.astro';
-import { getBlogPosts, getNotes } from '../../lib/content';
+import { getBlogPosts } from '../../lib/content';
 import { getSiteConfig, SITE } from '../../i18n/site';
 import { useTranslations } from '../../i18n/utils';
 import type { Locale } from '../../content.config';
@@ -18,19 +18,6 @@ const t = useTranslations(lang);
 
 const blogPosts = await getBlogPosts(lang);
 const sortedBlog = blogPosts.slice(0, 6);
-
-const allNotes = await getNotes(lang);
-const folderSet = new Map<string, number>();
-for (const note of allNotes) {
-  const id = note.id.replace(/\.md$/, '');
-  const parts = id.split('/');
-  if (parts.length > 2) {
-    // id is "zh/folder/note" → folder is parts[1]
-    const folder = parts[1];
-    folderSet.set(folder, (folderSet.get(folder) ?? 0) + 1);
-  }
-}
-const folders = [...folderSet.entries()].sort((a, b) => a[0].localeCompare(b[0]));
 ---
 
 <BaseLayout lang={lang}>
@@ -100,27 +87,6 @@ const folders = [...folderSet.entries()].sort((a, b) => a[0].localeCompare(b[0])
   {
     sortedBlog.length === 0 && (
       <p class="empty-message" style="padding: 1rem 0;">{t('home.no_posts')}</p>
-    )
-  }
-
-  <!-- Note Vaults -->
-  {
-    folders.length > 0 && (
-      <section class="home-notes animate-in animate-in-3" style="margin-top: 48px;">
-        <div class="section-label">
-          <span class="section-label-text">{t('home.note_vaults')}</span>
-          <div class="section-label-line"></div>
-          <a href={`/${lang}/notes/`} class="section-label-link">{t('home.all_notes')}</a>
-        </div>
-        <div>
-          {folders.map(([folder, count]) => (
-            <div class="home-note-item">
-              <a href={`/${lang}/notes/${folder}/`} class="home-note-title">{folder}/</a>
-              <span class="home-note-count">{t('notes.count', { count })}</span>
-            </div>
-          ))}
-        </div>
-      </section>
     )
   }
 </BaseLayout>

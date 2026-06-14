@@ -1,0 +1,12 @@
+{
+  version: 2,
+  mediaFileName: 'vimtex-auto-compile.mp4',
+  cutSegments: [
+    {
+      start: 2.054039,
+      end: 11.003386,
+      name: '',
+      selected: true,
+    },
+  ],
+}

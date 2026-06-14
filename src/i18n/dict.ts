@@ -9,7 +9,7 @@ export const dict = {
     // Navigation
     'nav.notes': '笔记',
     'nav.blog': '博客',
-    'nav.tags': '标签',
+    'nav.docs': '文档',
     'nav.search': '搜索',
 
     // Header
@@ -22,12 +22,9 @@ export const dict = {
     'search.placeholder': '搜索...',
     'search.title': '搜索',
 
-    // Tags
-    'tags.title': '标签',
-    'tags.no_tags': '暂无标签',
-    'tags.count': '{count} 篇文章',
-    'tags.back': '← 所有标签',
-    'tags.no_posts': '此标签下暂无文章',
+    // Docs
+    'docs.title': '文档',
+    'docs.no_posts': '暂无文档',
 
     // Blog
     'blog.title': '博客',
@@ -51,7 +48,6 @@ export const dict = {
     // Post
     'post.toc': '目录',
     'post.updated': '更新于',
-    'post.tags_no': '暂无标签',
 
     // Graph
     'graph.title': '知识图谱',
@@ -64,7 +60,7 @@ export const dict = {
   en: {
     'nav.notes': 'Notes',
     'nav.blog': 'Blog',
-    'nav.tags': 'Tags',
+    'nav.docs': 'Docs',
     'nav.search': 'Search',
 
     'header.theme_toggle': 'Toggle dark mode',
@@ -74,11 +70,9 @@ export const dict = {
     'search.placeholder': 'Search...',
     'search.title': 'Search',
 
-    'tags.title': 'Tags',
-    'tags.no_tags': 'No tags yet',
-    'tags.count': '{count} posts',
-    'tags.back': '← All tags',
-    'tags.no_posts': 'No posts with this tag',
+    // Docs
+    'docs.title': 'Docs',
+    'docs.no_posts': 'No docs yet',
 
     'blog.title': 'Blog',
     'blog.no_posts': 'No posts yet',
@@ -98,7 +92,6 @@ export const dict = {
 
     'post.toc': 'On this page',
     'post.updated': 'Updated',
-    'post.tags_no': 'No tags',
 
     'graph.title': 'Knowledge Graph',
     'graph.description':

@@ -1,0 +1,83 @@
+---
+import BaseLayout from '../../../components/layout/BaseLayout.astro';
+import { getCollection, render } from 'astro:content';
+import GithubSlugger from 'github-slugger';
+import { useTranslations } from '../../../i18n/utils';
+import type { Locale } from '../../../content.config';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('docs', ({ data }) => !data.draft);
+  return posts.map((post) => ({
+    params: {
+      lang: post.id.split('/')[0],
+      slug: post.id.replace(/\.md$/, '').split('/').slice(1).join('/'),
+    },
+    props: { post },
+  }));
+}
+
+const { lang } = Astro.params as { lang: Locale };
+const t = useTranslations(lang);
+const { post } = Astro.props;
+const { Content } = await render(post);
+---
+
+<BaseLayout
+  lang={lang}
+  title={post.data.title}
+  description={post.data.description}
+  ogType="article"
+>
+  <!-- Breadcrumbs -->
+  <nav class="breadcrumbs">
+    <a href={`/${lang}/docs/`}>{t('docs.title')}</a>
+    <span>/</span>
+    <span>{post.data.title}</span>
+  </nav>
+
+  <!-- Post Header -->
+  <header class="post-header">
+    <h1 class="post-title">{post.data.title}</h1>
+  </header>
+
+  <!-- Table of Contents -->
+  {
+    post.body && (
+      <details class="toc toc-spaced">
+        <summary>
+          <span class="title">{t('post.toc')}</span>
+        </summary>
+        <div class="inner">
+          <nav>
+            <ul>
+              {
+                (() => {
+                  const slugger = new GithubSlugger();
+                  return post.body
+                    .split('\n')
+                    .filter((l) => l.match(/^#{2,3}\s/))
+                    .map((l) => {
+                      const level = l.match(/^(#{2,3})/)?.[1].length ?? 2;
+                      const text = l.replace(/^#{2,3}\s/, '');
+                      const id = slugger.slug(text);
+                      return { level, text, id };
+                    })
+                    .map(({ level, text, id }) => (
+                      <li style={`--toc-depth: ${(level - 2) * 1.5}rem; margin-left: var(--toc-depth);`}>
+                        <a href={`#${id}`}>{text}</a>
+                      </li>
+                    ));
+                })()
+              }
+            </ul>
+          </nav>
+        </div>
+      </details>
+    )
+  }
+
+  <!-- Post Content -->
+  <div class="post-content md-content">
+    <Content />
+  </div>
+</BaseLayout>

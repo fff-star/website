@@ -13,6 +13,7 @@ export default defineConfig({
   site: 'https://fff-star.pages.dev',
   integrations: [react()],
   markdown: {
+    allowDangerousHtml: true,
     syntaxHighlight: 'shiki',
     shikiConfig: {
       themes: { light: 'github-dark', dark: 'github-dark' },

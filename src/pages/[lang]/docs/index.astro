@@ -1,0 +1,71 @@
+---
+import BaseLayout from '../../../components/layout/BaseLayout.astro';
+import { getDocsPosts } from '../../../lib/content';
+import { useTranslations } from '../../../i18n/utils';
+import type { Locale } from '../../../content.config';
+
+export function getStaticPaths() {
+  return [
+    { params: { lang: 'en' } },
+    { params: { lang: 'zh' } },
+  ];
+}
+
+const { lang } = Astro.params as { lang: Locale };
+const t = useTranslations(lang);
+
+const posts = await getDocsPosts(lang);
+
+// Group by year, then by month
+const grouped = new Map<string, Map<string, typeof posts>>();
+const dateLocale = lang === 'zh' ? 'zh-CN' : 'en-US';
+
+for (const post of posts) {
+  const year = post.data.date.getFullYear().toString();
+  const month = post.data.date.toLocaleDateString(dateLocale, { month: 'long' });
+  if (!grouped.has(year)) grouped.set(year, new Map());
+  const months = grouped.get(year)!;
+  if (!months.has(month)) months.set(month, []);
+  months.get(month)!.push(post);
+}
+---
+
+<BaseLayout lang={lang} title={t('docs.title')}>
+  <header class="page-header">
+    <h1>{t('docs.title')}</h1>
+  </header>
+  {posts.length === 0 && <p>{t('docs.no_posts')}</p>}
+
+  <div class="archive-posts">
+    {[...grouped.entries()].map(([year, months]) => (
+      <div class="archive-year">
+        <h2>{year}</h2>
+        {[...months.entries()].map(([month, items]) => (
+          <div class="archive-month">
+            <h3 class="archive-month-header">{month}</h3>
+            <div>
+              {items.map((post) => {
+                const slug = post.id.replace(/\.md$/, '').split('/').slice(1).join('/');
+                return (
+                  <div class="archive-entry">
+                    <h3 class="archive-entry-title">
+                      <a href={`/${lang}/docs/${slug}/`}>
+                        {post.data.title}
+                      </a>
+                    </h3>
+                    <div class="archive-meta">
+                      {post.data.date.toLocaleDateString(dateLocale, {
+                        month: 'short',
+                        day: 'numeric',
+                      })}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+      </div>
+    ))}
+  </div>
+</BaseLayout>

@@ -8,7 +8,15 @@ const blogSchema = z.object({
   title: z.string(),
   date: z.coerce.date(),
   updated: z.coerce.date().optional(),
-  tags: z.array(z.coerce.string()).default([]),
+  description: z.string(),
+  draft: z.boolean().default(false),
+  cover: z.string().optional(),
+});
+
+const docsSchema = z.object({
+  title: z.string(),
+  date: z.coerce.date(),
+  updated: z.coerce.date().optional(),
   description: z.string(),
   draft: z.boolean().default(false),
   cover: z.string().optional(),
@@ -30,12 +38,17 @@ const blog = defineCollection({
   schema: blogSchema,
 });
 
+const docs = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/docs' }),
+  schema: docsSchema,
+});
+
 const notes = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/notes' }),
   schema: notesSchema,
 });
 
-export const collections = { blog, notes };
+export const collections = { blog, docs, notes };
 
 // --- Locale helpers ---
 // Content ids look like "en/some-post" or "zh/folder/note"
