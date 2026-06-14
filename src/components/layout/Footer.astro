@@ -54,30 +54,6 @@ const siteConfig = getSiteConfig(lang);
   const yearEl = document.getElementById('copyright-year');
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-  const topLink = document.getElementById('top-link');
-  if (topLink) {
-    const updateVisibility = () => {
-      if (window.scrollY > 400) {
-        topLink.classList.remove('hidden');
-      } else {
-        topLink.classList.add('hidden');
-      }
-    };
-    // Check on load (deep-link, browser restore)
-    updateVisibility();
-
-    let ticking = false;
-    window.addEventListener('scroll', () => {
-      if (!ticking) {
-        requestAnimationFrame(() => {
-          updateVisibility();
-          ticking = false;
-        });
-        ticking = true;
-      }
-    });
-    topLink.addEventListener('click', () => {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-  }
+  import { initScrollTop } from '../../scripts/scroll-top';
+  initScrollTop();
 </script>
