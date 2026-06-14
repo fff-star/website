@@ -42,16 +42,22 @@ const pageTitle = title ? `${title} · ${siteConfig.title}` : siteConfig.title;
     <!-- Anti-flash: set theme before CSS loads -->
     <script is:inline>
       (function () {
-        const theme = localStorage.getItem('pref-theme');
-        if (theme === 'dark') {
-          document.documentElement.dataset.theme = 'dark';
-        } else if (theme === 'light') {
-          document.documentElement.dataset.theme = 'light';
-        } else if (
-          window.matchMedia('(prefers-color-scheme: dark)').matches
-        ) {
-          document.documentElement.dataset.theme = 'dark';
+        function applyTheme() {
+          var theme = localStorage.getItem('pref-theme');
+          if (theme === 'dark' || theme === 'light') {
+            document.documentElement.dataset.theme = theme;
+          } else if (
+            window.matchMedia('(prefers-color-scheme: dark)').matches
+          ) {
+            document.documentElement.dataset.theme = 'dark';
+          }
         }
+
+        applyTheme();
+
+        // Restore after View Transitions — Astro may strip data-theme
+        // when updating <html> attributes (e.g. lang) during a swap
+        document.addEventListener('astro:after-swap', applyTheme);
       })();
     </script>
 
