@@ -64,11 +64,13 @@ const t = useTranslations(lang);
 
       const items = (await Promise.all(search.results.map(async (r) => {
         const data = await r.data();
-        return `<a class="search-result" href="${data.url}">
-          <span class="search-result-title">${data.meta?.title || data.url}</span>
-          <span class="search-result-excerpt">${data.excerpt?.replace(/<\/?mark>/g, '') || ''}</span>
-        </a>`;
-      })));
+        return { url: data.url, title: data.meta?.title || data.url, excerpt: data.excerpt?.replace(/<\/?mark>/g, '') || '' };
+      })))
+        .filter((item) => item.url.startsWith(`/${lang}/`))
+        .map((item) => `<a class="search-result" href="${item.url}">
+          <span class="search-result-title">${item.title}</span>
+          <span class="search-result-excerpt">${item.excerpt}</span>
+        </a>`);
 
       results.innerHTML = items.length ? items.join('') : `<p class="search-empty">${noResults}</p>`;
     });

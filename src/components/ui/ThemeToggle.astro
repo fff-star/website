@@ -49,16 +49,14 @@
 </button>
 
 <style is:global>
-  /* Both icons hidden by default; theme-specific rules show the correct one */
-  .sun,
-  .moon {
-    display: none;
-  }
+  /* Moon visible by default; sun shown in dark mode */
+  .sun { display: none; }
+  .moon { display: inline-flex; }
   [data-theme='dark'] .sun {
     display: inline-flex;
   }
-  [data-theme='light'] .moon {
-    display: inline-flex;
+  [data-theme='dark'] .moon {
+    display: none;
   }
 </style>
 

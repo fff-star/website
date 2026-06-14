@@ -55,6 +55,8 @@ export const dict = {
     // Post
     'post.toc': '目录',
     'post.updated': '更新于',
+    'post.previous': '上一篇',
+    'post.next': '下一篇',
 
     // Graph
     'graph.title': '知识图谱',
@@ -105,6 +107,8 @@ export const dict = {
 
     'post.toc': 'On this page',
     'post.updated': 'Updated',
+    'post.previous': 'Previous',
+    'post.next': 'Next',
 
     'graph.title': 'Knowledge Graph',
     'graph.description':
