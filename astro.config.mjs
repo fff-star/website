@@ -2,6 +2,7 @@
 import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
 import remarkWikiLink from './src/lib/remark-wiki-link.mjs';
+import remarkMark from './src/lib/remark-mark.mjs';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import rehypeCallouts from 'rehype-callouts';
@@ -20,6 +21,7 @@ export default defineConfig({
     },
     remarkPlugins: [
       remarkWikiLink,
+      remarkMark,
       remarkMath,
     ],
     rehypePlugins: [

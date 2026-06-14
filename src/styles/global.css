@@ -69,7 +69,7 @@ body {
                'Segoe UI', Roboto, sans-serif;
   font-size: 18px;
   font-weight: 450;
-  line-height: 1.6;
+  line-height: 1.65;
   overflow-wrap: break-word;
   background: var(--theme);
   color: var(--primary);
@@ -539,7 +539,30 @@ select {
   color: var(--content);
   margin: 28px 0;
   font-size: 18px;
+}
+
+/* ============================================
+   Language-specific Typography
+   ============================================ */
+
+/* English: tighter line-height, kerning, hyphenation */
+html:lang(en) .post-content,
+html:lang(en) .md-content {
   line-height: 1.7;
+  font-kerning: normal;
+  word-spacing: 0.03em;
+  hyphens: auto;
+  hyphenate-limit-chars: 6 3 2;
+}
+
+/* Chinese: generous line-height for CJK density, auto CJK-Latin spacing */
+html:lang(zh) .post-content,
+html:lang(zh) .md-content {
+  line-height: 1.8;
+  font-kerning: normal;
+  word-spacing: normal;
+  hyphens: none;
+  text-spacing: normal;
 }
 
 /* ============================================
@@ -551,7 +574,7 @@ select {
   font-size: 30px;
   font-weight: 500;
   font-style: normal;
-  margin-top: 2.5rem;
+  margin-top: 2rem;
   margin-bottom: 0.75rem;
 }
 
@@ -560,7 +583,7 @@ select {
   font-size: 24px;
   font-weight: 550;
   font-style: normal;
-  margin-top: 1.5rem;
+  margin-top: 1.8rem;
   margin-bottom: 0.4rem;
 }
 
@@ -569,7 +592,7 @@ select {
   font-size: 20px;
   font-weight: 550;
   font-style: normal;
-  margin-top: 1.25rem;
+  margin-top: 1.4rem;
   margin-bottom: 0.4rem;
 }
 
@@ -578,7 +601,7 @@ select {
   font-size: 18px;
   font-weight: 600;
   font-style: normal;
-  margin-top: 1.25rem;
+  margin-top: 1.2rem;
   margin-bottom: 0.5rem;
 }
 
@@ -629,7 +652,7 @@ select {
 /* Paragraph spacing */
 .post-content p,
 .md-content p {
-  margin-bottom: 0.7em;
+  margin-bottom: 0.85em;
 }
 
 /* Inline code */
@@ -663,6 +686,23 @@ select {
 .md-content strong {
   font-weight: 600;
   color: var(--primary);
+}
+
+/* Mark — Ink: pure accent color, no background */
+.post-content mark,
+.md-content mark {
+  color: var(--accent);
+  font-weight: 500;
+  background: none;
+}
+
+/* Del — Fade: muted gray with thin strikethrough */
+.post-content del,
+.md-content del {
+  color: var(--secondary);
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+  opacity: 0.65;
 }
 
 /* Links in content */
