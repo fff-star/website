@@ -6,6 +6,7 @@ import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import rehypeCallouts from 'rehype-callouts';
 import rehypeSlug from 'rehype-slug';
+import rehypeImgAttrs from './src/lib/rehype-img-attrs.ts';
 
 // https://astro.build/config
 export default defineConfig({
@@ -25,6 +26,7 @@ export default defineConfig({
       rehypeCallouts,
       [rehypeKatex, { throwOnError: false }],
       rehypeSlug,
+      rehypeImgAttrs,
     ],
   },
   vite: {
