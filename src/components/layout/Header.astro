@@ -63,18 +63,6 @@ const navItems = [
 </header>
 
 <script>
-  // Locale switcher: HEAD precheck, fallback to home
-  const btn = document.getElementById('locale-switch');
-  btn?.addEventListener('click', async (e) => {
-    e.preventDefault();
-    const otherLocale = btn.dataset.otherLocale!;
-    // Build target URL by replacing current locale prefix
-    const target = window.location.pathname.replace(/^\/(en|zh)\//, `/${otherLocale}/`);
-    try {
-      const res = await fetch(target, { method: 'HEAD' });
-      window.location.href = res.ok ? target : `/${otherLocale}/`;
-    } catch {
-      window.location.href = `/${otherLocale}/`;
-    }
-  });
+  import { initLocaleSwitch } from '../../scripts/locale-switch';
+  initLocaleSwitch();
 </script>
