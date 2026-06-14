@@ -5,6 +5,7 @@ description: 基于 Neovim 搭建的 LaTeX 写作环境，从 LSP 补全、编�
 ---
 LaTeX 写作常常陷入两难：纯手打效率太低，IDE 又太过臃肿。本文记录笔者在 Neovim 中搭建 LaTeX 写作环境的完整过程，涵盖编译预览、代码片段、语法补全等环节，目标是让写作体验足够顺手。全文以 [lazy.nvim](https://lazy.folke.io/) 为插件管理器，适合已经会用 Neovim 但还没搭好 LaTeX 工作流的读者。
 
+> [!TIP]
 > 使用lazy.nvim作为插件管理器，如使用其他插件管理器，需要适当修改配置代码
 
 ## 准备工作
