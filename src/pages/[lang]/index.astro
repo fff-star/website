@@ -3,6 +3,7 @@ import BaseLayout from '../../components/layout/BaseLayout.astro';
 import { getBlogPosts } from '../../lib/content';
 import { getSiteConfig, SITE } from '../../i18n/site';
 import { useTranslations } from '../../i18n/utils';
+import { boldToHtml } from '../../lib/markdown';
 import type { Locale } from '../../content.config';
 
 export function getStaticPaths() {
@@ -27,7 +28,7 @@ const sortedBlog = blogPosts.slice(0, 6);
       <h1>{siteConfig.title}</h1>
     </header>
     <div class="entry-content">
-      <p set:html={siteConfig.description.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')} />
+      <p set:html={boldToHtml(siteConfig.description)} />
     </div>
     <footer class="entry-footer">
       <div class="social-icons">

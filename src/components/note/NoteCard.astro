@@ -1,5 +1,14 @@
 ---
-const { note } = Astro.props;
+import { useTranslations } from '../../i18n/utils';
+import type { Locale } from '../../content.config';
+
+interface Props {
+  note: any;
+  lang: Locale;
+}
+
+const { note, lang } = Astro.props;
+const t = useTranslations(lang);
 const url = `/notes/${note.id.replace(/\.md$/, '')}/`;
 ---
 
@@ -8,7 +17,7 @@ const url = `/notes/${note.id.replace(/\.md$/, '')}/`;
     <h2>{note.data.title}</h2>
   </header>
   <div class="entry-content">
-    <p>{note.data.description ?? 'No description'}</p>
+    <p>{note.data.description ?? t('notes.no_description')}</p>
   </div>
   <footer class="entry-footer">
     {

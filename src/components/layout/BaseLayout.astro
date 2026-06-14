@@ -2,6 +2,7 @@
 import Header from './Header.astro';
 import Footer from './Footer.astro';
 import { getSiteConfig, SITE } from '../../i18n/site';
+import { stripBold } from '../../lib/markdown';
 import type { Locale } from '../../content.config';
 import '../../styles/global.css';
 
@@ -22,7 +23,7 @@ const {
 } = Astro.props;
 
 const siteConfig = getSiteConfig(lang);
-const description = descProp ?? siteConfig.description.replace(/\*\*(.+?)\*\*/g, '$1');
+const description = descProp ?? stripBold(siteConfig.description);
 const pageTitle = title ? `${title} · ${siteConfig.title}` : siteConfig.title;
 ---
 

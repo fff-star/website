@@ -1,11 +1,15 @@
 ---
 import { getCollection } from 'astro:content';
+import { useTranslations } from '../../i18n/utils';
+import type { Locale } from '../../content.config';
 
 interface Props {
   currentSlug: string;
+  lang: Locale;
 }
 
-const { currentSlug } = Astro.props;
+const { currentSlug, lang } = Astro.props;
+const t = useTranslations(lang);
 
 // Build backlinks: find all notes that link to the current one
 const allNotes = await getCollection('notes', ({ data }) => data.publish && !data.draft);
@@ -23,14 +27,14 @@ const backlinks = allNotes.filter((note) => {
 {
   backlinks.length > 0 && (
     <section class="backlinks">
-      <h3>Linked References</h3>
+      <h3>{t('notes.backlinks')}</h3>
       <p class="backlinks-desc">
-        {backlinks.length} note{backlinks.length > 1 ? 's' : ''} link{backlinks.length === 1 ? 's' : ''} here
+        {t('notes.backlinks_count', { count: backlinks.length })}
       </p>
       <ul>
         {backlinks.map((note) => (
           <li>
-            <a href={`/notes/${note.id.replace(/\.md$/, '')}/`}>
+            <a href={`/${lang}/notes/${note.id.replace(/\.md$/, '')}/`}>
               {note.data.title}
             </a>
           </li>

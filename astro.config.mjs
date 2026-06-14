@@ -1,7 +1,6 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
-import tailwindcss from '@tailwindcss/vite';
 import remarkWikiLink from './src/lib/remark-wiki-link.mjs';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
@@ -29,7 +28,6 @@ export default defineConfig({
     ],
   },
   vite: {
-    plugins: [tailwindcss()],
     ssr: { noExternal: [] },
     resolve: {
       alias: {

@@ -12,7 +12,7 @@ const siteConfig = getSiteConfig(lang);
 
 <footer class="footer">
   <div class="footer-inner">
-    <span>&copy; {new Date().getFullYear()} {siteConfig.author}</span>
+    <span>&copy; <time id="copyright-year">{new Date().getFullYear()}</time> {siteConfig.author}</span>
     <span class="footer-sep">&middot;</span>
     <span>
       <a
@@ -50,17 +50,27 @@ const siteConfig = getSiteConfig(lang);
 </button>
 
 <script>
+  // Keep copyright year current
+  const yearEl = document.getElementById('copyright-year');
+  if (yearEl) yearEl.textContent = new Date().getFullYear();
+
   const topLink = document.getElementById('top-link');
   if (topLink) {
+    const updateVisibility = () => {
+      if (window.scrollY > 400) {
+        topLink.classList.remove('hidden');
+      } else {
+        topLink.classList.add('hidden');
+      }
+    };
+    // Check on load (deep-link, browser restore)
+    updateVisibility();
+
     let ticking = false;
     window.addEventListener('scroll', () => {
       if (!ticking) {
         requestAnimationFrame(() => {
-          if (window.scrollY > 400) {
-            topLink.classList.remove('hidden');
-          } else {
-            topLink.classList.add('hidden');
-          }
+          updateVisibility();
           ticking = false;
         });
         ticking = true;

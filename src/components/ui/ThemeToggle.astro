@@ -18,7 +18,6 @@
     stroke-linecap="round"
     stroke-linejoin="round"
     aria-hidden="true"
-    style="display: none;"
   >
     <circle cx="12" cy="12" r="5"></circle>
     <line x1="12" y1="1" x2="12" y2="3"></line>
@@ -44,24 +43,22 @@
     stroke-linecap="round"
     stroke-linejoin="round"
     aria-hidden="true"
-    style="display: none;"
   >
     <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
   </svg>
 </button>
 
 <style is:global>
-  [data-theme='dark'] .moon {
-    display: none !important;
-  }
-  [data-theme='light'] .sun {
-    display: none !important;
+  /* Both icons hidden by default; theme-specific rules show the correct one */
+  .sun,
+  .moon {
+    display: none;
   }
   [data-theme='dark'] .sun {
-    display: inline-flex !important;
+    display: inline-flex;
   }
   [data-theme='light'] .moon {
-    display: inline-flex !important;
+    display: inline-flex;
   }
 </style>
 

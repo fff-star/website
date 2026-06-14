@@ -1,7 +1,8 @@
-export type Locale = 'zh' | 'en';
+import type { Locale } from '../content.config';
+import { defaultLocale } from '../content.config';
 
-export const defaultLocale: Locale = 'en';
-
+export type { Locale };
+export { defaultLocale };
 export type TranslationKey = keyof typeof dict.zh;
 
 export const dict = {
@@ -19,8 +20,11 @@ export const dict = {
     'footer.built_with': '由',
 
     // Search
+    'search.label': '搜索站点',
     'search.placeholder': '搜索...',
     'search.title': '搜索',
+    'search.no_results': '未找到结果。',
+    'search.unavailable': '搜索不可用。',
 
     // Docs
     'docs.title': '文档',
@@ -37,6 +41,9 @@ export const dict = {
     'notes.graph': '知识图谱 →',
     'notes.no_index': '此文件夹没有 index.md。',
     'notes.breadcrumb': '笔记',
+    'notes.backlinks': '引用链接',
+    'notes.backlinks_count': '{count} 篇笔记引用了此页面',
+    'notes.no_description': '暂无描述',
 
     // Homepage
     'home.recent_writing': '近期文章',
@@ -67,8 +74,11 @@ export const dict = {
 
     'footer.built_with': 'Built with',
 
+    'search.label': 'Search the site',
     'search.placeholder': 'Search...',
     'search.title': 'Search',
+    'search.no_results': 'No results found.',
+    'search.unavailable': 'Search unavailable.',
 
     // Docs
     'docs.title': 'Docs',
@@ -82,6 +92,9 @@ export const dict = {
     'notes.count': '{count} notes',
     'notes.graph': 'Graph →',
     'notes.no_index': 'No index.md in this folder.',
+    'notes.backlinks': 'Linked References',
+    'notes.backlinks_count': '{count} notes link here',
+    'notes.no_description': 'No description',
     'notes.breadcrumb': 'Notes',
 
     'home.recent_writing': 'Recent Writing',

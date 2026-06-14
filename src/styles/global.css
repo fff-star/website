@@ -1,7 +1,6 @@
 /* --- Google Fonts --- */
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,9..144,400..650;1,9..144,400..650&family=Inter:ital,wght@0,400..650;1,400..650&display=swap');
 
-@import 'tailwindcss';
 @import 'katex/dist/katex.min.css';
 
 /* ============================================
@@ -1303,7 +1302,7 @@ h1 code, h2 code, h3 code, h4 code {
 .search-container input:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-dim);
+  box-shadow: 0 0 0 2px var(--accent);
 }
 
 .search-container .pagefind-ui__results {
@@ -1568,6 +1567,19 @@ h1 code, h2 code, h3 code, h4 code {
 
 a.skip-link:focus {
   top: 0;
+}
+
+/* Screen-reader-only utility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 /* ============================================

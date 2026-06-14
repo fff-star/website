@@ -14,8 +14,6 @@
   "dependencies": {
     "@astrojs/react": "^5.0.7",
     "@astrojs/rss": "^4.0.18",
-    "@braindb/remark-wiki-link": "^2.1.0",
-    "@tailwindcss/vite": "^4.3.0",
     "astro": "^6.4.6",
     "katex": "^0.17.0",
     "pagefind": "^1.5.2",
@@ -25,7 +23,6 @@
     "rehype-callouts": "^2.1.2",
     "rehype-katex": "^7.0.1",
     "rehype-slug": "^6.0.0",
-    "remark-math": "^6.0.0",
-    "tailwindcss": "^4.3.0"
+    "remark-math": "^6.0.0"
   }
 }

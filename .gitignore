@@ -27,3 +27,6 @@ pnpm-debug.log*
 .obsidian/
 .trash/
 __pycache__/
+
+# Test fixtures — may leak on SIGKILL / timeout
+__wiki_test__/

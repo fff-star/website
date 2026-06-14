@@ -14,6 +14,19 @@ import { fileURLToPath } from 'node:url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const NOTES_DIR = path.resolve(__dirname, '../content/notes');
 
+/**
+ * Canonical slug for wiki-link resolution.
+ * Strips quotes, replaces whitespace with dashes, lowercases.
+ * Exported so tests can match plugin behavior exactly.
+ */
+export function slugify(text) {
+  return text
+    .trim()
+    .replace(/['"]/g, '')
+    .replace(/\s+/g, '-')
+    .toLowerCase();
+}
+
 // Per-locale cache: locale → (slugified title → relative path within locale)
 const localeMap = new Map();
 
@@ -49,7 +62,7 @@ function buildLocaleMap(locale) {
 
             if (titleMatch) {
               const title = titleMatch[1].trim().replace(/['"]/g, '');
-              const slug = title.replace(/\s+/g, '-').toLowerCase();
+              const slug = slugify(title);
               map.set(slug, id);
             }
 
@@ -57,7 +70,7 @@ function buildLocaleMap(locale) {
             if (aliasesMatch) {
               const aliases = aliasesMatch[1].split(',').map((a) => a.trim().replace(/['"]/g, ''));
               for (const alias of aliases) {
-                const slug = alias.replace(/\s+/g, '-').toLowerCase();
+                const slug = slugify(alias);
                 map.set(slug, id);
               }
             }
@@ -68,7 +81,7 @@ function buildLocaleMap(locale) {
               if (items) {
                 for (const item of items) {
                   const alias = item.replace(/^-\s+/, '').trim().replace(/['"]/g, '');
-                  const slug = alias.replace(/\s+/g, '-').toLowerCase();
+                  const slug = slugify(alias);
                   map.set(slug, id);
                 }
               }
@@ -130,7 +143,7 @@ export default function remarkWikiLink() {
         const parts = m.inner.split('|');
         const targetPart = parts[0].split('#')[0].trim();
         const displayName = parts[1]?.trim() ?? parts[0].split('#')[0].trim();
-        const slugKey = targetPart.toLowerCase().replace(/['"]/g, '').replace(/\s+/g, '-');
+        const slugKey = slugify(targetPart);
         const resolvedId = map.get(slugKey);
 
         const href = resolvedId
