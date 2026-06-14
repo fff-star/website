@@ -104,13 +104,14 @@ const pageTitle = title ? `${title} · ${siteConfig.title}` : siteConfig.title;
 
     <!-- Watch for system theme changes -->
     <script>
-      import { setTheme } from '../../scripts/theme';
+      import { watchSystemTheme, setTheme } from '../../scripts/theme';
 
-      const mq = window.matchMedia('(prefers-color-scheme: dark)');
-      mq.addEventListener('change', () => {
-        if (!localStorage.getItem('pref-theme')) {
-          setTheme(mq.matches ? 'dark' : 'light');
-        }
+      let unwatch: (() => void) | null = null;
+
+      // Attach on initial load and re-attach after each navigation
+      document.addEventListener('astro:page-load', () => {
+        unwatch?.();
+        unwatch = watchSystemTheme((theme) => setTheme(theme));
       });
     </script>
   </body>

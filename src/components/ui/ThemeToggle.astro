@@ -62,5 +62,9 @@
 
 <script>
   import { toggleTheme } from '../../scripts/theme';
-  document.getElementById('theme-toggle')?.addEventListener('click', toggleTheme);
+
+  // Attach on initial load and re-attach after each View Transition navigation
+  document.addEventListener('astro:page-load', () => {
+    document.getElementById('theme-toggle')?.addEventListener('click', toggleTheme);
+  });
 </script>
