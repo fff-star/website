@@ -30,3 +30,4 @@ __pycache__/
 
 # Test fixtures — may leak on SIGKILL / timeout
 __wiki_test__/
+.superpowers/
