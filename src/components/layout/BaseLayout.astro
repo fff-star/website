@@ -1,5 +1,4 @@
 ---
-import { ClientRouter } from 'astro:transitions';
 import Header from './Header.astro';
 import Footer from './Footer.astro';
 import { getSiteConfig, SITE } from '../../i18n/site';
@@ -42,22 +41,14 @@ const pageTitle = title ? `${title} · ${siteConfig.title}` : siteConfig.title;
     <!-- Anti-flash: set theme before CSS loads -->
     <script is:inline>
       (function () {
-        function applyTheme() {
-          var theme = localStorage.getItem('pref-theme');
-          if (theme === 'dark' || theme === 'light') {
-            document.documentElement.dataset.theme = theme;
-          } else if (
-            window.matchMedia('(prefers-color-scheme: dark)').matches
-          ) {
-            document.documentElement.dataset.theme = 'dark';
-          }
+        var theme = localStorage.getItem('pref-theme');
+        if (theme === 'dark' || theme === 'light') {
+          document.documentElement.dataset.theme = theme;
+        } else if (
+          window.matchMedia('(prefers-color-scheme: dark)').matches
+        ) {
+          document.documentElement.dataset.theme = 'dark';
         }
-
-        applyTheme();
-
-        // Restore after View Transitions — Astro may strip data-theme
-        // when updating <html> attributes (e.g. lang) during a swap
-        document.addEventListener('astro:after-swap', applyTheme);
       })();
     </script>
 
@@ -84,9 +75,6 @@ const pageTitle = title ? `${title} · ${siteConfig.title}` : siteConfig.title;
     <meta property="og:url" content={Astro.url} />
     {image && <meta property="og:image" content={image} />}
 
-    <!-- View Transitions -->
-    <ClientRouter />
-
     <!-- Canonical -->
     <link rel="canonical" href={new URL(Astro.url.pathname, SITE.url).href} />
 
@@ -111,14 +99,7 @@ const pageTitle = title ? `${title} · ${siteConfig.title}` : siteConfig.title;
     <!-- Watch for system theme changes -->
     <script>
       import { watchSystemTheme, setTheme } from '../../scripts/theme';
-
-      let unwatch: (() => void) | null = null;
-
-      // Attach on initial load and re-attach after each navigation
-      document.addEventListener('astro:page-load', () => {
-        unwatch?.();
-        unwatch = watchSystemTheme((theme) => setTheme(theme));
-      });
+      watchSystemTheme((theme) => setTheme(theme));
     </script>
   </body>
 </html>
