@@ -1,20 +1,21 @@
 ---
-title: 基于Neovim的LaTeX配置指北
+title: A Guide to LaTeX Writing with Neovim
 date: 2026-06-14
-description: 基于 Neovim 搭建的 LaTeX 写作环境，从 LSP 补全、编译预览到代码片段全覆盖。
+description: A complete LaTeX writing environment built on Neovim, covering LSP completion, compilation preview, and code snippets.
 ---
-LaTeX 写作常常陷入两难：纯手打效率太低，IDE 又太过臃肿。本文记录笔者在 Neovim 中搭建 LaTeX 写作环境的完整过程，涵盖编译预览、代码片段、语法补全等环节，目标是让写作体验足够顺手。全文以 [lazy.nvim](https://lazy.folke.io/) 为插件管理器，适合已经会用 Neovim 但还没搭好 LaTeX 工作流的读者。
+LaTeX writing often presents a dilemma: typing everything by hand is tedious, yet full IDEs feel bloated. This post documents the complete process of setting up a LaTeX writing environment in Neovim, covering compilation preview, code snippets, syntax completion, and more — all with the goal of making the writing experience as smooth as possible. The guide uses [lazy.nvim](https://lazy.folke.io/) as the plugin manager and is aimed at readers who already know how to use Neovim but haven't yet set up a LaTeX workflow.
 
 > [!TIP]
-> 使用lazy.nvim作为插件管理器，如使用其他插件管理器，需要适当修改配置代码
+> This guide uses lazy.nvim as the plugin manager. If you use a different plugin manager, you'll need to adjust the configuration code accordingly.
 
-## 准备工作
-- [texlive](https://www.tug.org/texlive/)：完成环境配置，后续依赖`latexmk`
-- [neovim](https://neovim.io/)：要求版本大于0.10
-- [zathura](https://pwmt.org/projects/zathura/)：作为 PDF 查看器
-## 步骤
-### 配置 LSP + 补全引擎
-笔者使用的是最主流的`mason+mason-lspconfig+nvim-lspconfig`三个插件来管理 LSP 的下载、配置、接入；补全引擎为`blink.cmp`。由于这个部分不是本文重点，仅仅放出笔者的配置：
+## Prerequisites
+- [texlive](https://www.tug.org/texlive/): provides the TeX environment; `latexmk` is required later
+- [neovim](https://neovim.io/): version 0.10 or later
+- [zathura](https://pwmt.org/projects/zathura/): used as the PDF viewer
+## Steps
+### Configuring LSP + Completion Engine
+I use the mainstream trio of `mason` + `mason-lspconfig` + `nvim-lspconfig` to manage LSP installation, configuration, and integration, with `blink.cmp` as the completion engine. Since this isn't the main focus of the article, I'll just share my configuration:
+
 ``` lua
 
 return {
@@ -103,7 +104,8 @@ return {
 }
 ```
 ### VimTeX
-[VimTeX](https://github.com/lervag/vimtex) 提供了丰富的文本对象、高亮、环境检测和编译集成等功能。配置代码如下：
+[VimTeX](https://github.com/lervag/vimtex) provides rich text objects, syntax highlighting, environment detection, and compilation integration. Configuration:
+
 ``` lua
 
 return {
@@ -111,21 +113,23 @@ return {
         "lervag/vimtex",
         lazy = false, 
         init = function()
-            vim.g.vimtex_syntax_enabled = 1 -- 使用vimtex提供的高亮
-            vim.g.vimtex_view_method = "zathura" -- 使用zathura打开pdf
+            vim.g.vimtex_syntax_enabled = 1 -- Enable VimTeX syntax highlighting
+            vim.g.vimtex_view_method = "zathura" -- Use Zathura as the PDF viewer
         end
     }
 }
 ```
 
-具体的功能和用法，读者可以自行研究，下面介绍几例笔者常用的功能：
+For specific features and usage, readers are encouraged to explore on their own. Here are a few features I use regularly:
 
-1. **开启自动编译**：保存文件后自动编译，默认映射为 `<LocalLeader>ll`（LocalLeader 默认为 `\`）；编译完成后用 `<LocalLeader>lv` 正向搜索，在 Zathura 中定位到光标所在位置对应的 PDF 片段；在 Zathura 中按 `Ctrl+Click` 可以反向搜索，跳回 tex 源码对应行。
-2. **显示目录**：`<LocalLeader>lt` 打开浮动目录窗口，可以快速跳转到各个 section、label、引用和 TODO 项。
-3. **文本对象**：VimTeX 提供了丰富的 text object，比如 `ie` 选中环境内容、`ae` 选中环境及其 `\begin`/`\end` 行、`id` 选中 `$...$` 或 `\(...\)` 内联公式内容、`am` 选中块级公式及其 `\[...\]` 边界。
+1. **Auto-compilation**: Automatically compiles after saving. The default mapping is `<LocalLeader>ll` (LocalLeader defaults to `\`). After compilation, use `<LocalLeader>lv` for forward search to locate the corresponding PDF segment in Zathura. In Zathura, `Ctrl+Click` performs reverse search, jumping back to the corresponding line in the TeX source.
+2. **Table of Contents**: `<LocalLeader>lt` opens a floating ToC window for quick navigation between sections, labels, references, and TODO items.
+3. **Text Objects**: VimTeX provides rich text objects, such as `ie` to select environment content, `ae` to select an environment with its `\begin`/`\end` lines, `id` to select inline math (`$...$` or `\(...\)`), and `am` to select block-level math with its `\[...\]` delimiters.
+
 ![](edit-latex.gif)
 ### LuaSnip
-[LuaSnip](https://github.com/L3MON4D3/LuaSnip) 提供代码片段补全功能，将常见结构预设为片段，能显著提高编辑速度和体验。配置代码如下：
+[LuaSnip](https://github.com/L3MON4D3/LuaSnip) provides snippet completion, allowing common structures to be preset as snippets — significantly improving editing speed and experience. Configuration:
+
 ``` lua
 
 return {
@@ -160,7 +164,9 @@ return {
 	},
 }
 ```
-在编写 snippet 文件时，通常会做如下的约定：
+
+When writing snippet files, the following convention is commonly used:
+
 ``` lua
 local ls = require("luasnip")
 local s = ls.snippet
@@ -173,9 +179,10 @@ local fmt = require("luasnip.extras.fmt").fmt
 local fmta = require("luasnip.extras.fmt").fmta
 local rep = require("luasnip.extras").rep
 ```
-关于这个插件的具体配置和使用，笔者只介绍几例，挂一漏万，权当是抛砖引玉。
 
-先看最简单的入门例子——一个将 `alpha` 展开为 `\alpha` 的 snippet：
+I'll cover only a few examples of this plugin's configuration and usage. This barely scratches the surface, but should serve as a good starting point.
+
+Let's begin with the simplest example — a snippet that expands `alpha` into `\alpha`:
 
 ```lua
 s({ trig = "alpha" }, {
@@ -183,18 +190,22 @@ s({ trig = "alpha" }, {
 })
 ```
 
-在插入模式下输入 `alpha` 后按展开键（前文配置的 `<C-k>`），`\alpha` 就会被插入。`s()` 的第一个参数是触发条件（这里只用了 `trig`），第二个参数是一个节点列表——这里只有一个 `text_node`，即纯文本。
+In insert mode, typing `alpha` followed by the expand key (mapped to `<C-k>` earlier) inserts `\alpha`. The first argument to `s()` specifies the trigger conditions (here just `trig`), and the second is a list of nodes — just a single `text_node` (plain text) in this case.
 
-1. 自动展开的代码片段
+1. Auto-expanding Snippets
 ![](luasnip-1.gif)
-掌握了基本写法后，接下来看如何利用 VimTeX 的 API 让 snippet 更智能。核心需求是：希腊字母补全只在公式环境内生效，在正文中不触发。只需：
+
+Once you've grasped the basics, let's look at how to make snippets smarter using VimTeX's API. The core requirement is: Greek letter completion should only trigger inside math environments, not in body text. Simply add:
+
 ``` lua
 local tex_utils = {}
 tex_utils.in_mathzone = function() -- math context detection
 	return vim.fn["vimtex#syntax#in_mathzone"]() == 1
 end
 ```
-就可以在后续的配置中使用这个环境来让一些代码片段自动展开——这样 `;a` 在正文中不会误触发，只在公式环境内自动展开为 `\alpha`：
+
+This allows us to use context-aware auto-expansion in subsequent configurations — so `;a` in body text won't misfire, but will auto-expand to `\alpha` only inside math environments:
+
 ```lua
 	s({ trig = ";a", snippetType = "autosnippet", condition = tex_utils.in_mathzone }, {
 		t("\\alpha"),
@@ -203,9 +214,12 @@ end
 		t("\\beta"),
 	}),
 ```
-2. 动态生成片段
+
+2. Dynamically Generated Snippets
 ![](luasnip-2.gif)
-利用 Lua 我们可以实现动态生成的代码片段，提升效率。
+
+Using Lua, we can create dynamically generated snippets for even greater efficiency.
+
 ``` lua
 local function make_table(_, parent)
 	local rows = tonumber(parent.captures[1])
@@ -263,9 +277,12 @@ return {
 	),
 }
 ```
-3. 实现计算器
+
+3. Inline Calculator
 ![](luasnip-3.gif)
-同样是利用 Lua 的数学库实现的计算功能，需要注意的是由于`blink.cmp`的补全机制，需要阻止提前运行，涉及的代码如下：
+
+This leverages Lua's math library to implement a calculator. Due to `blink.cmp`'s completion mechanism, we need to prevent premature evaluation. The relevant code:
+
 ``` lua
 local function eval_math(_, parent)
 	-- Return placeholder during static/docstring resolution (blink.cmp resolve)
@@ -307,5 +324,5 @@ return {
 }
 ```
 
-## 总结
-以上是笔者 LaTeX 写作环境的核心组件：texlab + blink.cmp 提供补全，VimTeX 负责编译预览，LuaSnip 用片段削减重复劳动。三者配合，日常写作基本脱离鼠标。具体教程推荐 [参考](https://ejmastnak.com/tutorials/vim-latex/intro/)，感谢最初启发本文的 [分享](https://castel.dev/post/lecture-notes-1/)，以及上述开源项目的贡献者。
+## Summary
+The above covers the core components of my LaTeX writing environment: texlab + blink.cmp for completion, VimTeX for compilation and preview, and LuaSnip for reducing repetitive work with snippets. Together, these three tools make daily writing essentially mouse-free. For more detailed tutorials, check the [reference](https://ejmastnak.com/tutorials/vim-latex/intro/) and thanks to the original [inspiration](https://castel.dev/post/lecture-notes-1/) for this article, as well as the contributors of the open-source projects mentioned above.
