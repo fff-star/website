@@ -1,0 +1,38 @@
+---
+interface MarkdownHeading {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
+interface Props {
+  headings: MarkdownHeading[];
+  title: string;
+  minDepth?: number;
+  maxDepth?: number;
+}
+
+const { headings, title, minDepth = 2, maxDepth = 4 } = Astro.props;
+const tocItems = headings.filter((h) => h.depth >= minDepth && h.depth <= maxDepth);
+---
+
+{
+  tocItems.length > 0 && (
+    <details class="toc toc-spaced">
+      <summary>
+        <span class="title">{title}</span>
+      </summary>
+      <div class="inner">
+        <nav aria-label={title}>
+          <ul>
+            {tocItems.map(({ depth, slug, text }) => (
+              <li style={`--toc-depth: ${(depth - minDepth) * 1.5}rem; margin-left: var(--toc-depth);`}>
+                <a href={`#${slug}`}>{text}</a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </div>
+    </details>
+  )
+}
