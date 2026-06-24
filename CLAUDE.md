@@ -10,8 +10,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 | `npm run build` | Build to `dist/` + run Pagefind search index |
 | `npm run preview` | Preview the production build locally |
 | `npm run astro -- --help` | Astro CLI passthrough |
-| `npm test` | Run wiki-link plugin tests |
-| `node --experimental-strip-types --test test/` | Run tests directly |
+| `npm test` | Run all tests (85 tests, 0 fail) |
 
 ## Architecture
 
@@ -23,15 +22,31 @@ This is an Astro 6 personal website with three content collections — **blog** 
 
 **[[wiki-link]] resolution happens at build time** via a custom remark plugin (`src/lib/remark-wiki-link.mjs`). It walks `src/content/notes/` on first use, builds a slugified title→path map from frontmatter titles and aliases, then transforms `[[Target]]` AST nodes into `<a>` tags with resolved URLs. Unresolved links get class `wiki-link-new` (wavy underline) instead of `wiki-link` (dotted underline). Tests in `test/wiki-link.test.ts` cover title resolution, aliases (inline + multi-line), filename fallback, and case insensitivity.
 
-**`==highlight==` syntax** is supported via `src/lib/remark-mark.mjs`, which converts `==text==` into `<mark>` elements. This is compatible with Typora, Obsidian, and Logseq. Standard Markdown `~~strikethrough~~` renders as `<del>`.
+**`==highlight==` syntax** is supported via `src/lib/remark-mark.mjs`, which converts `==text==` into `<mark>` elements. This is compatible with Typora, Obsidian, and Logseq. Standard Markdown `~~strikethrough~~` renders as `<del>`. The plugin uses a two-pass approach: first collect all text nodes, then apply replacements in reverse index order to avoid corrupting the tree walk. Inner text is HTML-escaped to prevent XSS.
+
+**Table of Contents** is a reusable Astro component (`src/components/ui/TableOfContents.astro`) that accepts `headings` from Astro's `render()`, filters by `minDepth`/`maxDepth`, and renders a collapsible `<details>` tree with indented links. It replaced inline regex-based ToC generation in blog, docs, and notes pages.
 
 **Bilingual (zh/en) via `[lang]` routing.** The default locale is `en`. All content routes live under `src/pages/[lang]/` with `[lang]` as the top-level path parameter. `getStaticPaths()` generates both `{ lang: 'en' }` and `{ lang: 'zh' }` for each route. Content collections use locale subdirectories (`content/<type>/en/`, `content/<type>/zh/`) with locale filtering via `id.startsWith('${locale}/')`. The i18n dictionary (`src/i18n/dict.ts`) holds all UI strings; `useTranslations(locale)` returns a `t(key, vars?)` function. Site config per locale is in `src/i18n/site.ts`.
 
-**Graph is folder-scoped.** `src/lib/graph.ts` provides three generators: `buildFolderGraph(folder)` for a single knowledge domain, `buildGraph()` for all-folders overview, and `buildLocalGraph(slug)` for a note's neighborhood. Wiki-links only connect notes within the same folder — cross-folder edges don't exist in this model.
+**Graph is folder-scoped.** `src/lib/graph.ts` provides three generators: `buildFolderGraph(folder)` for a single knowledge domain, `buildGraph()` for all-folders overview, and `buildLocalGraph(slug)` for a note's neighborhood. Pure string helpers (`extractWikilinks`, `getFolder`, `getFilename`) are extracted to `src/lib/graph-helpers.ts` so they can be tested without pulling in `astro:content`. Wiki-links only connect notes within the same folder — cross-folder edges don't exist in this model.
 
 ### Type system
 
-The `Locale` type (`'en' | 'zh'`) is defined once in `src/content.config.ts` and re-exported by `src/i18n/dict.ts`. Import it from either location — `content.config` is the canonical source. Markdown utilities live in `src/lib/markdown.ts` (`stripMarkdown`, `boldToHtml`).
+The `Locale` type (`'en' | 'zh'`) is defined once in `src/types.ts` along with `locales` and `defaultLocale`, and re-exported by both `src/content.config.ts` and `src/i18n/dict.ts`. Import it from `src/types.ts` when possible (avoids pulling in `astro:content`). Markdown utilities live in `src/lib/markdown.ts` (`stripBold`, `boldToHtml`).
+
+### Tests
+
+All tests use `node --experimental-strip-types --test test/*.ts` (also `npm test`). No test framework — just `node:test` + `node:assert/strict`. Pure function tests import directly; remark plugin tests run through a `unified().use(remarkParse).use(plugin).use(remarkRehype).use(rehypeStringify)` pipeline.
+
+| Test file | Covers |
+|---|---|
+| `test/remark-mark.test.ts` (13) | `==highlight==` → `<mark>`, XSS escaping, regex edge cases |
+| `test/wiki-link.test.ts` (7) | `[[wikilink]]` resolution, aliases, case insensitivity, fallback |
+| `test/markdown.test.ts` (14) | `stripBold`, `boldToHtml` — HTML escaping, edge cases |
+| `test/i18n-utils.test.ts` (17) | `localePath`, `otherLocale`, `useTranslations` — interpolation, fallback |
+| `test/i18n-dict.test.ts` (6) | Structural: key parity, empty values, variable placeholder consistency |
+| `test/site-config.test.ts` (6) | `getSiteConfig` per locale, `SITE` constants |
+| `test/graph-helpers.test.ts` (22) | `extractWikilinks`, `getFolder`, `getFilename` — pure helpers |
 
 ### Route map
 

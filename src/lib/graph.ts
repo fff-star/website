@@ -1,5 +1,6 @@
 import { getCollection } from 'astro:content';
 import type { Locale } from '../content.config';
+import { extractWikilinks, getFolder, getFilename } from './graph-helpers.ts';
 
 interface GraphNode {
   id: string;
@@ -27,29 +28,7 @@ const TAG_COLORS = [
   '#1abc9c', '#e67e22', '#3498db', '#c0392b', '#27ae60',
 ];
 
-/** Extract [[wiki-links]] from markdown content */
-function extractWikilinks(content: string): string[] {
-  const regex = /\[\[([^\]|#]+?)(?:\|[^\]]+)?(?:#[^\]]+)?\]\]/g;
-  const links: string[] = [];
-  let match;
-  while ((match = regex.exec(content)) !== null) {
-    links.push(match[1].trim().toLowerCase().replace(/\s+/g, '-'));
-  }
-  return [...new Set(links)];
-}
-
-/** Get the folder path for a note id (e.g. "en/demos/hello-world" → "demos") */
-function getFolder(id: string): string {
-  // id format: "en/folder/note" or "zh/folder/note"
-  const parts = id.split('/');
-  return parts.length >= 3 ? parts[1] : '';
-}
-
-/** Get just the filename from an id (e.g. "en/demos/hello-world" → "hello-world") */
-function getFilename(id: string): string {
-  const idx = id.lastIndexOf('/');
-  return idx === -1 ? id : id.slice(idx + 1);
-}
+// extractWikilinks, getFolder, getFilename — imported from ./graph-helpers.ts
 
 /** List all unique folders in the vault for a given locale */
 export async function getFolders(locale: Locale): Promise<string[]> {

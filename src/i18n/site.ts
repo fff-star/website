@@ -1,4 +1,4 @@
-import type { Locale } from '../content.config';
+import type { Locale } from '../types.ts';
 
 export interface SiteConfig {
   title: string;

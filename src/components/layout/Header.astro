@@ -33,8 +33,20 @@ const navItems = [
       </div>
     </div>
 
+    <!-- Hamburger toggle (visible on mobile) -->
+    <button
+      id="menu-toggle"
+      class="menu-toggle"
+      aria-label="Toggle menu"
+      aria-expanded="false"
+    >
+      <span class="menu-toggle-bar"></span>
+      <span class="menu-toggle-bar"></span>
+      <span class="menu-toggle-bar"></span>
+    </button>
+
     <!-- Navigation Menu + Locale -->
-    <div class="nav-right">
+    <div id="nav-right" class="nav-right">
       <ul id="menu" class="menu">
         {
           navItems.map(({ label, href }) => {
@@ -65,4 +77,14 @@ const navItems = [
 <script>
   import { initLocaleSwitch } from '../../scripts/locale-switch';
   initLocaleSwitch();
+
+  // Mobile menu toggle
+  const toggle = document.getElementById('menu-toggle');
+  const navRight = document.getElementById('nav-right');
+  if (toggle && navRight) {
+    toggle.addEventListener('click', () => {
+      const open = navRight.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', String(open));
+    });
+  }
 </script>

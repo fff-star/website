@@ -60,7 +60,7 @@ const { Content, headings } = await render(post);
   </header>
 
   <!-- Table of Contents -->
-  <TableOfContents headings={headings} title={t('post.toc')} minDepth={2} />
+  <TableOfContents headings={headings} title={t('post.toc')} minDepth={2} maxDepth={3} />
 
   <!-- Post Content -->
   <div class="post-content md-content">

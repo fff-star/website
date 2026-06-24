@@ -50,10 +50,5 @@ const notes = defineCollection({
 
 export const collections = { blog, docs, notes };
 
-// --- Locale helpers ---
-// Content ids look like "en/some-post" or "zh/folder/note"
-// Extract locale from the first path segment.
-
-export type Locale = 'en' | 'zh';
-export const locales: Locale[] = ['en', 'zh'];
-export const defaultLocale: Locale = 'en';
+// --- Locale helpers (canonical definition in src/types.ts) ---
+export { type Locale, locales, defaultLocale } from './types.ts';

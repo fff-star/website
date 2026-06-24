@@ -1,4 +1,4 @@
-import { dict, type Locale, type TranslationKey, defaultLocale } from './dict';
+import { dict, type Locale, type TranslationKey, defaultLocale } from './dict.ts';
 
 export { type Locale, type TranslationKey, defaultLocale };
 

@@ -1,5 +1,5 @@
-import type { Locale } from '../content.config';
-import { defaultLocale } from '../content.config';
+import type { Locale } from '../types.ts';
+import { defaultLocale } from '../types.ts';
 
 export type { Locale };
 export { defaultLocale };
@@ -64,6 +64,11 @@ export const dict = {
       '每个文件夹是一个独立的知识领域。节点 = 笔记，连线 = wiki 链接。拖动重排，滚轮缩放，点击跳转。',
     'graph.no_connections': '此文件夹暂无连接。添加 [[wiki 链接]] 来关联笔记。',
     'graph.folder_stats': '{folder}/ · {nodes} 条笔记 · {links} 条连接',
+
+    // 404
+    'notfound.title': '404',
+    'notfound.message': '页面不存在',
+    'notfound.back': '← 返回首页',
   },
 
   en: {
@@ -116,5 +121,10 @@ export const dict = {
     'graph.no_connections':
       'No connections in this folder yet. Add [[wiki-links]] between notes.',
     'graph.folder_stats': '{folder}/ · {nodes} notes · {links} connections',
+
+    // 404
+    'notfound.title': '404',
+    'notfound.message': 'Page not found.',
+    'notfound.back': '← Back home',
   },
 } as const;

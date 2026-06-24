@@ -4,6 +4,7 @@ import react from '@astrojs/react';
 import remarkWikiLink from './src/lib/remark-wiki-link.mjs';
 import remarkMark from './src/lib/remark-mark.mjs';
 import remarkMath from 'remark-math';
+import remarkGfm from 'remark-gfm';
 import rehypeKatex from 'rehype-katex';
 import rehypeCallouts from 'rehype-callouts';
 import rehypeSlug from 'rehype-slug';
@@ -20,6 +21,7 @@ export default defineConfig({
       themes: { light: 'github-dark', dark: 'github-dark' },
     },
     remarkPlugins: [
+      remarkGfm,
       remarkWikiLink,
       remarkMark,
       remarkMath,

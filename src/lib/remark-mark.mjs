@@ -7,10 +7,26 @@
 
 import { visit } from 'unist-util-visit';
 
-const MARK_REGEX = /==([^=\n]+)==/g;
+/** Escape HTML special chars to prevent XSS when building raw HTML nodes. */
+function escapeHtml(str) {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
 
 export default function remarkMark() {
+  // (?<![=])==(?![=]) — opening: exactly two equals, no third = on either side
+  // ([^\n]+?)           — inner content (lazy, allows = inside, no newlines)
+  // (?<![=])==(?![=]) — closing: exactly two equals, no third = on either side
+  const MARK_REGEX = /(?<![=])==(?![=])([^\n]+?)(?<![=])==(?![=])/g;
+
   return (tree) => {
+    /** @type {Array<{node: object, index: number, parent: object}>} */
+    const pending = [];
+
+    // First pass: collect text nodes that need modification.
     visit(tree, 'text', (node, index, parent) => {
       if (!parent) return;
 
@@ -38,7 +54,7 @@ export default function remarkMark() {
 
         newNodes.push({
           type: 'html',
-          value: `<mark>${m.inner}</mark>`,
+          value: `<mark>${escapeHtml(m.inner)}</mark>`,
         });
 
         lastEnd = m.end;
@@ -48,7 +64,19 @@ export default function remarkMark() {
         newNodes.push({ type: 'text', value: node.value.slice(lastEnd) });
       }
 
-      parent.children.splice(index, 1, ...newNodes);
+      pending.push({ parent, index, newNodes });
     });
+
+    // Second pass: apply replacements in reverse index order so earlier
+    // indices remain valid when later mutations shift the array.
+    // Sort by parent identity then descending index.
+    pending.sort((a, b) => {
+      if (a.parent !== b.parent) return 0; // different parents, order doesn't matter
+      return b.index - a.index;
+    });
+
+    for (const { parent, index, newNodes } of pending) {
+      parent.children.splice(index, 1, ...newNodes);
+    }
   };
 }

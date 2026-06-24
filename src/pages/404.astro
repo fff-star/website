@@ -1,0 +1,41 @@
+---
+import BaseLayout from '../components/layout/BaseLayout.astro';
+import { dict, defaultLocale } from '../i18n/dict';
+import type { Locale } from '../types.ts';
+
+// Detect language from the URL — if the path starts with /zh/ use zh, else en
+const pathname = Astro.url.pathname;
+const lang: Locale = pathname.startsWith('/zh/') || pathname === '/zh' ? 'zh' : defaultLocale;
+const t = (key: keyof typeof dict.zh) => dict[lang][key] ?? dict[defaultLocale][key];
+---
+
+<BaseLayout lang={lang}>
+  <section class="notfound" style="
+    text-align: center;
+    padding: 6rem 1.5rem 3rem;
+    max-width: var(--main-width);
+    margin: 0 auto;
+  ">
+    <p style="
+      font-family: 'Fraunces', serif;
+      font-size: 96px;
+      font-weight: 600;
+      font-style: italic;
+      color: var(--border);
+      line-height: 1;
+      margin-bottom: 1rem;
+      user-select: none;
+    " aria-hidden="true">{t('notfound.title')}</p>
+    <p style="
+      font-size: 20px;
+      color: var(--secondary);
+      margin-bottom: 2rem;
+    ">{t('notfound.message')}</p>
+    <a href={lang === 'zh' ? '/zh/' : '/en/'} style="
+      font-size: 16px;
+      color: var(--accent);
+      text-decoration: underline;
+      text-underline-offset: 0.2em;
+    ">{t('notfound.back')}</a>
+  </section>
+</BaseLayout>

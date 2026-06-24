@@ -26,7 +26,7 @@ const tocItems = headings.filter((h) => h.depth >= minDepth && h.depth <= maxDep
         <nav aria-label={title}>
           <ul>
             {tocItems.map(({ depth, slug, text }) => (
-              <li style={`--toc-depth: ${(depth - minDepth) * 1.5}rem; margin-left: var(--toc-depth);`}>
+              <li style={`--toc-depth: ${Math.max(0, (depth - minDepth)) * 1.5}rem; margin-left: var(--toc-depth);`}>
                 <a href={`#${slug}`}>{text}</a>
               </li>
             ))}
